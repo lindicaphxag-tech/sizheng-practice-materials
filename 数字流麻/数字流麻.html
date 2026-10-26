@@ -1,183 +1,309 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>数字流麻 · 落幕之后，仍有回响</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A120B'/%3E%3Cpath d='M8 8h16l-6 8 6 8H8l6-8z' fill='none' stroke='%23E4B04A' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="description" content="《落幕之后，仍有回响》三联数字流麻：墨底、鎏金、玻璃流麻的高新技术数字呈现。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C0A07'/%3E%3Cpath d='M8 8h16l-6 8 6 8H8l6-8z' fill='none' stroke='%23E4B04A' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-/* ============ 基础（先 375px） ============ */
+/* ============================================================
+   数字流麻 · 视觉层
+   设计语言：墨底 · 鎏金 · 玻璃流麻
+   - 内容默认可见，动画只做增强（无 JS / 减弱动效时依然完整）
+   ============================================================ */
 :root{
-  --ink:#17110B;
-  --ink2:#211809;
-  --bone:#EDE3D2;
-  --bone-dim:#BBAE97;
+  --ink:#0B0906;
+  --ink-2:#14100A;
+  --ink-3:#1D1710;
+  --bone:#EFE6D6;
+  --bone-2:#CBBFA9;
+  --bone-3:#938771;
   --amber:#C85A2A;
   --gold:#E4B04A;
-  --violet:#5A3D5C;
-  --dusk:#2C2747;
-  --line:rgba(237,227,210,.22);
+  --gold-lt:#F6DE9E;
+  --violet:#8B7FCF;
+  --violet-dp:#4A3A63;
+  --seal:#B33A28;
+  --hair:rgba(228,176,74,.26);
+  --hair-2:rgba(239,230,214,.14);
+  --glass:rgba(239,230,214,.045);
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   background:var(--ink);
   color:var(--bone);
-  font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
-  line-height:1.7;
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;
+  line-height:1.75;
   -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
-.serif{font-family:"Songti SC","Noto Serif CJK SC","STSong",serif}
+.serif{font-family:"Songti SC","Noto Serif CJK SC","STSong","SimSun",serif}
 ::selection{background:var(--gold);color:var(--ink)}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
 img{display:block;max-width:100%}
+svg{display:block}
 
-/* 背景噪点层 */
-.grain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background:radial-gradient(circle at 30% 20%,rgba(228,176,74,.05),transparent 55%),
-             radial-gradient(circle at 80% 70%,rgba(90,61,92,.10),transparent 60%);}
+/* ---------- 全局光与纹理 ---------- */
+.atmos{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(70% 55% at 22% 8%, rgba(200,90,42,.16), transparent 62%),
+    radial-gradient(60% 50% at 82% 26%, rgba(74,58,99,.20), transparent 64%),
+    radial-gradient(90% 70% at 50% 108%, rgba(228,176,74,.10), transparent 66%),
+    linear-gradient(180deg,#0C0A07 0%,#0B0906 46%,#0A0806 100%);}
+.grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.055;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 7s steps(6) infinite}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}20%{transform:translate(-2%,1%)}40%{transform:translate(1%,-2%)}
+  60%{transform:translate(-1%,-1%)}80%{transform:translate(2%,1%)}100%{transform:translate(0,0)}}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(115% 85% at 50% 45%, transparent 52%, rgba(0,0,0,.55) 100%)}
+main,header,section,footer{position:relative;z-index:3}
 
-/* ============ Hero ============ */
-.hero{position:relative;min-height:92vh;display:flex;flex-direction:column;justify-content:center;
-  padding:64px 20px 48px;overflow:hidden;z-index:1}
-#heroCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.hero-inner{position:relative;z-index:1;max-width:1080px;margin:0 auto;width:100%;text-align:center}
-.eyebrow{display:inline-block;font-size:12px;letter-spacing:.35em;color:var(--gold);
-  border:1px solid rgba(228,176,74,.4);border-radius:999px;padding:6px 14px;margin-bottom:22px;
-  opacity:0;animation:fadeIn 1s .35s forwards}
-.hero-title{font-size:30px;line-height:1.35;font-weight:700;letter-spacing:.06em;margin-bottom:18px}
-.hero-title .ch{display:inline-block;opacity:0;animation:chIn .7s forwards;transform:translateY(.4em)}
-@keyframes chIn{to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{to{opacity:1}}
-.hero-sub{font-size:15px;color:var(--bone-dim);letter-spacing:.14em;margin-bottom:26px;opacity:0;
-  animation:fadeIn 1.2s 2s forwards}
-.rings{position:relative;height:56px;margin-bottom:18px;opacity:0;animation:fadeIn .6s 2.6s forwards}
-.ring{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;
-  border:1.5px solid rgba(228,176,74,.85);opacity:0;animation:ringOut 3.2s 3s infinite}
-.ring.r2{animation-delay:3.9s}
-@keyframes ringOut{0%{transform:scale(1);opacity:.9}60%{opacity:.25}100%{transform:scale(12);opacity:0}}
-.hero-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;
-  opacity:0;animation:fadeIn 1s 3.1s forwards}
-.tag{font-size:13px;padding:7px 14px;border:1px solid var(--line);border-radius:4px;color:var(--bone-dim)}
-.tag b{color:var(--bone);font-weight:600}
-.hero-hint{font-size:13px;color:var(--gold);opacity:0;animation:fadeIn 1s 3.8s forwards}
-.hero-hint svg{vertical-align:-2px;margin-right:4px}
-.hero-scroll{margin-top:26px;font-size:12px;color:var(--bone-dim);opacity:0;
-  animation:fadeIn 1s 4.5s forwards}
-.hero-scroll .down{display:block;margin:8px auto 0;width:1px;height:34px;
-  background:linear-gradient(var(--gold),transparent);animation:drop 1.6s infinite}
-@keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
-  55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+/* ---------- 鎏金字 ---------- */
+.foil{
+  background:linear-gradient(96deg,#8A6A2F 0%,#E4B04A 12%,#FFF4D2 24%,#D9A94E 40%,
+             #8A6A2F 54%,#E8B958 70%,#FFF7DE 84%,#C99B3E 100%);
+  background-size:230% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 18px rgba(228,176,74,.22));
+  animation:foilSweep 11s linear infinite}
+@keyframes foilSweep{from{background-position:0 0}to{background-position:230% 0}}
 
-/* ============ 展区 ============ */
-.section{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:56px 20px 40px}
-.sec-head{text-align:center;margin-bottom:34px}
-.sec-kicker{font-size:12px;letter-spacing:.32em;color:var(--gold);margin-bottom:10px}
-.sec-title{font-size:26px;letter-spacing:.08em}
-.sec-desc{font-size:14px;color:var(--bone-dim);margin-top:10px;max-width:620px;margin-left:auto;margin-right:auto}
+/* ---------- Hero ---------- */
+.hero{min-height:94vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:88px 22px 64px;text-align:center;overflow:hidden;isolation:isolate}
+#liquid{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;
+  opacity:.85;mask-image:radial-gradient(78% 62% at 50% 46%,#000 32%,transparent 78%);
+  -webkit-mask-image:radial-gradient(78% 62% at 50% 46%,#000 32%,transparent 78%)}
+.hero-inner{position:relative;max-width:1040px;width:100%}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.34em;
+  color:var(--gold-lt);border:1px solid var(--hair);border-radius:999px;padding:7px 16px;
+  background:rgba(228,176,74,.05);backdrop-filter:blur(6px)}
+.eyebrow i{width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.hero-title{font-size:clamp(30px,7.2vw,78px);line-height:1.24;font-weight:700;
+  letter-spacing:.05em;margin:26px auto 0;text-wrap:balance;display:block}
+/* 单字不再拆 span：鎏金渐变作用于整行，入场用遮罩擦除（沙落字现） */
+.hero-rule{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px auto 0;
+  max-width:420px;color:var(--hair)}
+.hero-rule span{height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--hair),transparent)}
+.hero-rule em{font-style:normal;font-size:10px;letter-spacing:.4em;color:var(--bone-3)}
+.hero-sub{font-size:clamp(13px,2.2vw,16.5px);color:var(--bone-2);letter-spacing:.22em;margin-top:18px}
+.hero-chapters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.chip{display:flex;align-items:baseline;gap:9px;font-size:12.5px;padding:9px 15px;border-radius:8px;
+  border:1px solid var(--hair-2);background:linear-gradient(180deg,rgba(239,230,214,.05),rgba(239,230,214,.015));
+  color:var(--bone-2);backdrop-filter:blur(8px);transition:border-color .4s var(--ease),transform .4s var(--ease)}
+.chip:hover{border-color:var(--hair);transform:translateY(-2px)}
+.chip b{color:var(--bone);font-weight:600;letter-spacing:.08em;flex:none}
+.chip span{color:var(--bone-3);letter-spacing:.06em}
+.chip b::after{content:"";display:inline-block;width:1px;height:10px;margin-left:9px;
+  background:var(--hair);vertical-align:-1px}
+.chip[data-tone="era"]{box-shadow:inset 0 1px 0 rgba(200,90,42,.28)}
+.chip[data-tone="people"]{box-shadow:inset 0 1px 0 rgba(228,176,74,.28)}
+.chip[data-tone="future"]{box-shadow:inset 0 1px 0 rgba(139,127,207,.30)}
+.hero-hint{margin-top:34px;font-size:12.5px;letter-spacing:.1em;color:var(--gold-lt);
+  display:inline-flex;align-items:center;gap:8px;opacity:.92}
+.hero-hint svg{flex:none;animation:nudge 2.6s var(--ease) infinite}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.hero-scroll{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+  font-size:10.5px;letter-spacing:.3em;color:var(--bone-3);text-align:center}
+.hero-scroll .down{display:block;margin:10px auto 0;width:1px;height:38px;
+  background:linear-gradient(180deg,var(--gold),transparent);animation:drop 2s var(--ease) infinite}
+@keyframes drop{0%{transform:scaleY(.1);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
+  55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(.1);transform-origin:bottom}}
+.seal{display:grid;place-content:center;margin:22px auto 0;width:44px;height:44px;
+  border:1.5px solid var(--seal);border-radius:3px;color:var(--seal);transform:rotate(-4deg);
+  font-family:"Songti SC",serif;font-size:10.5px;line-height:1.15;letter-spacing:.04em;opacity:.85;
+  box-shadow:0 0 0 1px rgba(179,58,40,.18) inset;position:relative}
 
-.tape-row{display:grid;grid-template-columns:1fr;gap:34px;justify-items:center}
-.tape{width:min(288px,88vw);cursor:pointer;user-select:none}
-.tape-stage{perspective:1400px;aspect-ratio:3/4;position:relative}
-.tape-inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,1,.36,1)}
+/* ---------- 展区通用 ---------- */
+.section{max-width:1180px;margin:0 auto;padding:92px 22px 40px}
+.sec-head{text-align:center;margin-bottom:44px}
+.sec-kicker{font-size:10.5px;letter-spacing:.42em;color:var(--gold);margin-bottom:14px}
+.sec-title{font-size:clamp(22px,4.4vw,36px);letter-spacing:.1em;font-weight:700}
+.sec-desc{font-size:14px;color:var(--bone-2);margin:14px auto 0;max-width:640px;line-height:1.9}
+
+/* ---------- 三联流麻 ---------- */
+.tape-row{display:grid;grid-template-columns:1fr;gap:46px;justify-items:center}
+.tape{width:min(300px,86vw);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.tape-stage{position:relative;perspective:1600px;aspect-ratio:3/4;transform-style:preserve-3d;
+  transition:transform .8s var(--ease)}
+.tape:hover .tape-stage{transform:translateY(-7px)}
+/* 章节光晕 */
+.tape-stage::before{content:"";position:absolute;inset:-14% -18%;border-radius:50%;z-index:-1;
+  filter:blur(42px);opacity:.55;transition:opacity .7s var(--ease)}
+.tape.era .tape-stage::before{background:radial-gradient(circle at 50% 42%,rgba(200,90,42,.55),transparent 66%)}
+.tape.people .tape-stage::before{background:radial-gradient(circle at 50% 42%,rgba(228,176,74,.45),transparent 66%)}
+.tape.future .tape-stage::before{background:radial-gradient(circle at 50% 42%,rgba(139,127,207,.55),transparent 66%)}
+.tape:hover .tape-stage::before{opacity:.9}
+.tape-inner{position:absolute;inset:0;transform-style:preserve-3d;
+  transition:transform 1.05s var(--ease)}
 .tape.flipped .tape-inner{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:10px;overflow:hidden;border:1px solid rgba(237,227,210,.28);
-  box-shadow:0 22px 44px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12)}
-.face-front{background:#000}
-.face-front img{width:100%;height:100%;object-fit:cover}
-.corner{position:absolute;left:14px;top:14px;font-size:12px;letter-spacing:.28em;color:var(--bone);
-  padding:6px 12px;background:rgba(23,17,11,.55);border-radius:3px;backdrop-filter:none}
-.flip-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:12px;
-  color:var(--bone);background:rgba(23,17,11,.55);padding:6px 14px;border-radius:999px;white-space:nowrap}
+  border-radius:14px;overflow:hidden;
+  border:1px solid rgba(228,176,74,.36);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.10) inset,
+    0 -1px 0 rgba(0,0,0,.55) inset,
+    0 0 0 6px rgba(239,230,214,.022),
+    0 0 0 7px rgba(228,176,74,.12),
+    0 34px 60px -18px rgba(0,0,0,.82),
+    0 8px 24px rgba(0,0,0,.45)}
+.face-front{background:#050403}
+.face-front img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);
+  transition:transform 1.2s var(--ease),filter .8s var(--ease);filter:saturate(1.02) contrast(1.02)}
+.tape:hover .face-front img{transform:scale(1.055)}
+/* 玻璃厚度：内阴影 + 底部沉积 + 静置反光 */
+.face-front::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.38) 0%,rgba(0,0,0,0) 20%,rgba(0,0,0,0) 58%,rgba(0,0,0,.48) 100%),
+    radial-gradient(120% 68% at 50% 118%,var(--sed,rgba(228,176,74,.32)),transparent 62%),
+    radial-gradient(105% 105% at 50% 50%,transparent 56%,rgba(0,0,0,.36) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 22px rgba(0,0,0,.55)}
+/* 章节沉积色 */
+.tape.era{--sed:rgba(200,90,42,.40)}
+.tape.people{--sed:rgba(228,176,74,.34)}
+.tape.future{--sed:rgba(139,127,207,.40)}
+/* 玻璃反光扫过 */
+.sheen{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;opacity:.32;
+  background:linear-gradient(104deg,transparent 34%,rgba(255,247,222,.20) 46%,
+    rgba(255,255,255,.34) 50%,rgba(255,247,222,.16) 54%,transparent 66%);
+  background-size:280% 100%;background-position:64% 0;transition:background-position 1.3s var(--ease),opacity .5s var(--ease)}
+.tape:hover .sheen{background-position:-46% 0;opacity:.5}
+/* 面板内的悬浮细砂 */
+.sand{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.75;border-radius:14px}
+.corner{position:absolute;left:13px;top:13px;z-index:3;font-size:11px;letter-spacing:.26em;color:var(--bone);
+  padding:6px 12px;border-radius:4px;background:rgba(11,9,6,.52);backdrop-filter:blur(10px);
+  border:1px solid rgba(239,230,214,.16)}
+.flip-hint{position:absolute;left:50%;bottom:14px;z-index:3;transform:translateX(-50%);font-size:11.5px;
+  letter-spacing:.14em;color:var(--bone);background:rgba(11,9,6,.5);padding:7px 15px;border-radius:999px;
+  border:1px solid rgba(239,230,214,.16);backdrop-filter:blur(10px);white-space:nowrap;
+  transition:opacity .4s var(--ease)}
+.tape.flipped .flip-hint,.tape.flipped .corner{opacity:0}
+/* 背面 */
 .face-back{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;
-  padding:26px 24px;text-align:center}
-.face-back .b-kicker{font-size:12px;letter-spacing:.3em;opacity:.8;margin-bottom:14px}
-.face-back .b-title{font-size:24px;letter-spacing:.12em;margin-bottom:22px}
-.face-back .b-poem{font-size:18px;line-height:1.9;letter-spacing:.08em;margin-bottom:26px;
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 2px}
-.face-back .b-theory{font-size:12.5px;opacity:.92;letter-spacing:.05em}
-.tape canvas.particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;
-  border-radius:10px}
-.tape-note{text-align:center;font-size:13px;color:var(--bone-dim);margin-top:14px}
-.tape-note b{color:var(--bone);font-weight:600}
+  padding:30px 26px;text-align:center;background:
+    radial-gradient(120% 80% at 50% 0%,rgba(228,176,74,.10),transparent 62%),
+    linear-gradient(168deg,var(--ink-3),var(--ink-2) 62%,var(--ink))}
+.face-back::after{content:"";position:absolute;inset:11px;border:1px solid rgba(228,176,74,.16);
+  border-radius:8px;pointer-events:none}
+/* 背面章节水印 */
+.face-back::before{content:attr(data-no);position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+  text-align:center;font-family:"Songti SC","STSong",serif;font-size:clamp(120px,22vw,168px);line-height:1;
+  color:rgba(228,176,74,.085);letter-spacing:.04em;pointer-events:none;user-select:none}
+.b-kicker{font-size:10.5px;letter-spacing:.3em;color:var(--gold);margin-bottom:16px}
+.b-poem{font-size:clamp(17px,2.4vw,20px);line-height:2;letter-spacing:.1em;
+  padding:20px 4px;margin-bottom:20px;position:relative;color:var(--bone)}
+.b-poem::before,.b-poem::after{content:"";position:absolute;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--hair),transparent)}
+.b-poem::before{top:0}.b-poem::after{bottom:0}
+.b-theory{font-size:12px;letter-spacing:.06em;color:var(--bone-2);position:relative;z-index:1}
+.b-seal{position:absolute;right:16px;bottom:14px;width:38px;height:38px;border:1.5px solid var(--seal);
+  border-radius:2px;color:var(--seal);display:grid;place-content:center;transform:rotate(6deg);
+  font-family:"Songti SC",serif;font-size:10px;line-height:1.1;letter-spacing:.02em}
+.tape-note{text-align:center;font-size:12.5px;color:var(--bone-3);margin-top:20px;letter-spacing:.04em}
+.tape-note b{color:var(--bone-2);font-weight:600}
 .tape[aria-disabled="true"]{cursor:default}
 
-/* 章节配色 */
-.tape.era .face-back{background:linear-gradient(160deg,#3A2417,#22150C)}
-.tape.people .face-back{background:linear-gradient(160deg,#3A2A12,#241A09)}
-.tape.future .face-back{background:linear-gradient(160deg,#241E3E,#151226)}
-
-/* ============ 原理区 ============ */
-.theory-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:8px}
-.t-card{border:1px solid var(--line);border-radius:8px;padding:24px 20px;background:rgba(33,24,9,.32)}
-.t-no{font-size:12px;letter-spacing:.3em;color:var(--gold);margin-bottom:8px}
-.t-name{font-size:18px;letter-spacing:.06em;margin-bottom:8px}
-.t-link{font-size:13px;color:var(--gold);margin-bottom:12px;letter-spacing:.04em}
-.t-body{font-size:14px;color:var(--bone-dim)}
+/* ---------- 原理卡 ---------- */
+.theory-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.t-card{position:relative;border-radius:14px;padding:30px 26px 28px;overflow:hidden;
+  border:1px solid var(--hair-2);
+  background:linear-gradient(172deg,rgba(239,230,214,.055),rgba(239,230,214,.014) 58%,transparent);
+  backdrop-filter:blur(10px);
+  transition:transform .55s var(--ease),border-color .55s var(--ease),box-shadow .55s var(--ease)}
+.t-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--gold),transparent 78%);opacity:.75}
+.t-card:hover{transform:translateY(-4px);border-color:var(--hair);
+  box-shadow:0 22px 44px -20px rgba(0,0,0,.85),0 0 0 1px rgba(228,176,74,.10) inset}
+.t-no{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.3em;color:var(--gold);
+  margin-bottom:12px}
+.t-no i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.t-name{font-size:19px;letter-spacing:.08em;margin-bottom:10px}
+.t-link{font-size:12.5px;color:var(--gold-lt);letter-spacing:.04em;margin-bottom:14px;opacity:.9}
+.t-body{font-size:13.6px;color:var(--bone-2);line-height:1.95}
 .t-body b{color:var(--bone);font-weight:600}
 
-/* ============ 尾声 ============ */
-.epilogue{border-top:1px solid var(--line);margin-top:14px;padding-top:30px;text-align:center}
-.epilogue .ep-title{font-size:19px;letter-spacing:.08em;margin-bottom:14px}
-.epilogue p{font-size:14px;color:var(--bone-dim);max-width:640px;margin:0 auto 10px}
-.pill{display:inline-block;font-size:12.5px;border:1px solid rgba(228,176,74,.45);color:var(--gold);
-  padding:6px 14px;border-radius:4px;margin:6px 5px 0;letter-spacing:.04em}
-.footer{position:relative;z-index:1;text-align:center;padding:34px 20px 40px;font-size:12px;color:var(--bone-dim)}
+/* ---------- 尾声 ---------- */
+.epilogue{position:relative;border-top:1px solid var(--hair-2);margin-top:28px;padding:52px 26px 34px;
+  text-align:center;border-radius:0 0 16px 16px;
+  background:radial-gradient(80% 100% at 50% 0%,rgba(228,176,74,.07),transparent 68%)}
+.ep-title{font-size:clamp(18px,3.2vw,24px);letter-spacing:.1em;margin-bottom:18px}
+.epilogue p{font-size:13.6px;color:var(--bone-2);max-width:660px;margin:0 auto 12px;line-height:1.95}
+.epilogue p b{color:var(--bone)}
+.pills{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:22px}
+.pill{font-size:11.5px;letter-spacing:.06em;border:1px solid var(--hair);color:var(--gold-lt);
+  padding:7px 15px;border-radius:999px;background:rgba(228,176,74,.05)}
+.footer{text-align:center;padding:44px 22px 52px;font-size:11.5px;color:var(--bone-3);letter-spacing:.1em}
+.footer .dot{display:inline-block;margin:0 8px;color:var(--hair)}
 
-/* ============ 桌面增强 ============ */
+/* ---------- 桌面增强 ---------- */
 @media (min-width:768px){
-  .hero{padding:72px 40px 60px}
-  .hero-title{font-size:52px;letter-spacing:.08em}
-  .hero-sub{font-size:17px}
-  .sec-title{font-size:32px}
-  .tape-row{grid-template-columns:repeat(3,1fr);gap:26px}
+  .hero{padding:100px 44px 72px}
+  .tape-row{grid-template-columns:repeat(3,1fr);gap:30px;align-items:start}
   .theory-grid{grid-template-columns:repeat(3,1fr)}
-  .t-card{padding:28px 24px}
+  .section{padding:104px 40px 48px}
 }
-@media (min-width:1200px){
-  .hero-title{font-size:64px}
-  .tape{width:min(300px,100%)}
+@media (min-width:1240px){
+  .tape{width:min(320px,100%)}
+}
+@media (max-width:420px){
+  .seal{display:none}
 }
 
-/* ============ 低动效 ============ */
+.js .hero-title{clip-path:inset(0 100% 0 0);filter:blur(5px);opacity:.001}
+.js .hero-title.in{clip-path:inset(0 0 0 0);filter:blur(0);opacity:1;
+  transition:clip-path 1.25s var(--ease),filter 1s var(--ease),opacity .6s linear}
+
+/* ---------- 动效开关：JS 存在且允许动效时才做入场 ---------- */
+.js .reveal{opacity:0;transform:translateY(18px)}
+.js .reveal.in{opacity:1;transform:none}
+.js .reveal{transition:opacity .9s var(--ease),transform .9s var(--ease)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01s !important;animation-iteration-count:1 !important;
-    transition-duration:.01s !important}
-  .hero-title .ch{opacity:1;transform:none}
-  .hero-hint,.hero-sub,.eyebrow,.hero-tags,.hero-scroll,.rings{opacity:1}
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;
+    transition-duration:.001s!important}
+  .js .reveal,.js .hero-title{opacity:1!important;transform:none!important;
+    clip-path:none!important;filter:none!important}
+  .grain{animation:none}
 }
 </style>
 </head>
 <body>
+<div class="atmos" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<!-- ===== 视图：首屏 ===== -->
+<!-- ================= Hero ================= -->
 <header class="hero">
-  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <canvas id="liquid" aria-hidden="true"></canvas>
   <div class="hero-inner">
-    <span class="eyebrow">思政实践 · 实物作品的高新技术数字版</span>
-    <h1 class="hero-title serif" id="heroTitle">《落幕之后，仍有回响》</h1>
+    <span class="eyebrow"><i></i>思政实践 · 实物作品的高新技术数字版</span>
+    <h1 class="hero-title serif foil" id="heroTitle">《落幕之后，仍有回响》</h1>
+    <div class="seal" aria-hidden="true">思政<br>实践</div>
+    <div class="hero-rule" aria-hidden="true"><span></span><em>MARXISM</em><span></span></div>
     <p class="hero-sub">历史的更替 · 人民的力量 · 理想的延续</p>
-    <div class="rings" aria-hidden="true"><span class="ring"></span><span class="ring r2"></span></div>
-    <div class="hero-tags">
-      <span class="tag"><b>第一章 · 时代</b>　旧世界的落幕</span>
-      <span class="tag"><b>第二章 · 人民</b>　她们的名字</span>
-      <span class="tag"><b>第三章 · 未来</b>　理想不会落幕</span>
+    <div class="hero-chapters">
+      <span class="chip" data-tone="era"><b>第一章 · 时代</b><span>旧世界的落幕</span></span>
+      <span class="chip" data-tone="people"><b>第二章 · 人民</b><span>她们的名字</span></span>
+      <span class="chip" data-tone="future"><b>第三章 · 未来</b><span>理想不会落幕</span></span>
     </div>
     <p class="hero-hint">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18M5 10l7 5 7-5"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v18M5 10l7 5 7-5"/></svg>
       点击下方流麻，翻转它——沙落字现，回响开始
     </p>
-    <div class="hero-scroll">向下滚动<span class="down" aria-hidden="true"></span></div>
   </div>
+  <div class="hero-scroll" aria-hidden="true">向下滚动<span class="down"></span></div>
 </header>
 
-<!-- ===== 视图：三联数字流麻 ===== -->
+<!-- ================= 三联流麻 ================= -->
 <main class="section" id="gallery">
-  <div class="sec-head">
+  <div class="sec-head reveal">
     <p class="sec-kicker">THE TRIPTYCH</p>
     <h2 class="sec-title serif">三联数字流麻</h2>
     <p class="sec-desc">三块流麻，三段历史回响。点击任意一块，细沙沉降、画面翻转，诗句与原理在沙落之后显现。</p>
@@ -185,9 +311,9 @@ img{display:block;max-width:100%}
   <div class="tape-row" id="tapeRow"></div>
 </main>
 
-<!-- ===== 视图：原理阐释 ===== -->
+<!-- ================= 原理阐释 ================= -->
 <section class="section" id="theory">
-  <div class="sec-head">
+  <div class="sec-head reveal">
     <p class="sec-kicker">MARXIST PERSPECTIVE</p>
     <h2 class="sec-title serif">原理阐释</h2>
     <p class="sec-desc">画面如何印证马克思主义基本原理——每一块流麻，都是一次从现象到原理的观看。</p>
@@ -195,13 +321,13 @@ img{display:block;max-width:100%}
   <div class="theory-grid" id="theoryGrid"></div>
 </section>
 
-<!-- ===== 视图：尾声 ===== -->
+<!-- ================= 尾声 ================= -->
 <section class="section">
-  <div class="epilogue">
+  <div class="epilogue reveal">
     <h3 class="ep-title serif">一件实物，两种回响</h3>
     <p>本页是《落幕之后，仍有回响》的<b>高新技术数字版</b>：以粒子系统模拟流沙沉降，以 3D 翻转复刻流麻的交互体验。</p>
     <p>它与团队手工制作的三联流麻实物互为表里——实物交付作品本体，数字版作为答辩演示与传播载体。</p>
-    <div>
+    <div class="pills">
       <span class="pill">手绘/生成画面 + 手工注油组盒</span>
       <span class="pill">粒子流沙 + 3D 翻转交互</span>
       <span class="pill">原理引路 · 现实落脚</span>
@@ -209,63 +335,74 @@ img{display:block;max-width:100%}
   </div>
 </section>
 
-<footer class="footer">《落幕之后，仍有回响》 · 马克思主义基本原理课程实践 · 2026</footer>
+<footer class="footer">《落幕之后，仍有回响》<span class="dot">·</span>马克思主义基本原理课程实践<span class="dot">·</span>2026</footer>
 
 <script>
-/* ============ 数据 ============ */
+document.documentElement.classList.remove('no-js');
+document.documentElement.classList.add('js');
+
+/* ============ 数据（内容与原版一致） ============ */
 var TAPES = [
   { id:'era', no:'一', chapter:'时代', title:'旧世界的落幕',
-    img:'assets/01-旧世界的落幕.png', tone:'#C85A2A',
+    img:'assets/01-旧世界的落幕.png', tone:'#C85A2A', seal:'时代',
     poem:'旧世界的黄昏里，孕育着新世界的黎明。',
     theory:'社会基本矛盾与社会形态发展',
     body:'生产力与生产关系的矛盾运动，推动社会形态由低级向高级更替。画面中旧工厂群的落幕，恰是旧的生产关系让位于新形态的写照——落幕不是终结，而是新世界孕育的起点。' },
   { id:'people', no:'二', chapter:'人民', title:'她们的名字',
-    img:'assets/02-她们的名字.png', tone:'#E4B04A',
+    img:'assets/02-她们的名字.png', tone:'#E4B04A', seal:'人民',
     poem:'历史从不缺少英雄，也不该遗忘千千万万个普通的名字。',
     theory:'人民群众是历史的创造者',
     body:'历史是人民群众创造的。纺织女工、工人与农民，这些沉默的名字构成历史真正的底色；英雄出自人民，历史的主体永远是千千万万个普通劳动者。' },
   { id:'future', no:'三', chapter:'未来', title:'理想不会落幕',
-    img:'assets/03-理想不会落幕.png', tone:'#8B7FCF',
+    img:'assets/03-理想不会落幕.png', tone:'#8B7FCF', seal:'未来',
     poem:'有些人倒在黎明之前，但黎明从未停止到来。',
     theory:'社会发展的前进性与曲折性 · 理想与实践',
     body:'社会发展是前进性与曲折性的统一。青年走过黑夜走向黎明，正是这一规律的个体映照：理想不因挫折而熄灭，它必须经由人的实践，一次次走向现实。' }
 ];
 
+var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
 /* ============ 渲染 ============ */
 (function render(){
   var row = document.getElementById('tapeRow');
-  TAPES.forEach(function(t){
+  TAPES.forEach(function(t, i){
     var el = document.createElement('div');
-    el.className = 'tape ' + t.id;
+    el.className = 'tape reveal ' + t.id;
     el.setAttribute('role','button');
     el.setAttribute('tabindex','0');
     el.setAttribute('aria-label','翻转流麻：' + t.chapter + '，' + t.title);
+    el.style.transitionDelay = (i * 110) + 'ms';
     el.innerHTML =
       '<div class="tape-stage">' +
         '<div class="tape-inner">' +
           '<div class="face face-front">' +
             '<img src="' + t.img + '" alt="' + t.chapter + '《' + t.title + '》画面">' +
+            '<canvas class="sand" aria-hidden="true"></canvas>' +
             '<span class="corner">第' + t.no + '章 · ' + t.chapter + '</span>' +
             '<span class="flip-hint">点击翻转 · 沙落字现</span>' +
+            '<span class="sheen" aria-hidden="true"></span>' +
           '</div>' +
-          '<div class="face face-back">' +
+          '<div class="face face-back" data-no="' + t.no + '">' +
             '<p class="b-kicker">第' + t.no + '章 · ' + t.chapter + ' · ' + t.title + '</p>' +
             '<p class="b-poem serif">' + t.poem + '</p>' +
             '<p class="b-theory">' + t.theory + '</p>' +
+            '<span class="b-seal" aria-hidden="true">' + t.seal + '</span>' +
           '</div>' +
         '</div>' +
-        '<canvas class="particles" aria-hidden="true"></canvas>' +
       '</div>' +
       '<p class="tape-note"><b>' + t.chapter + '</b> · 沙落之后，<b>' + t.theory.split(' · ')[0] + '</b></p>';
     row.appendChild(el);
     new Tape(el, t);
   });
+
   var grid = document.getElementById('theoryGrid');
-  TAPES.forEach(function(t){
+  TAPES.forEach(function(t, i){
     var c = document.createElement('article');
-    c.className = 't-card';
+    c.className = 't-card reveal';
+    c.style.transitionDelay = (i * 110) + 'ms';
     c.innerHTML =
-      '<p class="t-no">第' + t.no + '章 · ' + t.chapter + '</p>' +
+      '<p class="t-no"><i></i>第' + t.no + '章 · ' + t.chapter + '</p>' +
       '<h3 class="t-name serif">' + t.title + '</h3>' +
       '<p class="t-link">' + t.theory + '</p>' +
       '<p class="t-body">' + t.body + '</p>';
@@ -273,154 +410,252 @@ var TAPES = [
   });
 })();
 
-/* ============ 标题逐字动画 ============ */
+/* ============ 滚动入场 ============ */
 (function(){
-  var el = document.getElementById('heroTitle');
-  var txt = el.textContent;
-  el.textContent = '';
-  var arr = txt.split('');
-  arr.forEach(function(ch,i){
-    var s = document.createElement('span');
-    s.className = 'ch';
-    s.textContent = ch;
-    s.style.animationDelay = (0.55 + i*0.07) + 's';
-    el.appendChild(s);
+  var items = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window) || REDUCE){
+    items.forEach(function(el){ el.classList.add('in'); });
+    document.getElementById('heroTitle').classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin:'0px 0px -12% 0px', threshold:.12 });
+  items.forEach(function(el){ io.observe(el); });
+
+  /* 标题：整行鎏金 + 遮罩擦除入场（不拆字，避免 background-clip 断链） */
+  var title = document.getElementById('heroTitle');
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ title.classList.add('in'); });
   });
 })();
 
-/* ============ 流麻翻转 + 粒子 ============ */
+/* ============ 面板内的悬浮细砂（常驻，极慢） ============ */
+function SandField(canvas, tone){
+  var c = canvas.getContext('2d');
+  var W = 0, H = 0, ps = [], raf = null, alive = false;
+  function size(){
+    var r = canvas.getBoundingClientRect();
+    if(r.width < 2) return;
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+  }
+  function seed(){
+    ps = [];
+    var n = Math.round(Math.min(70, (W * H) / 3200));
+    for(var i = 0; i < n; i++){
+      ps.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.5 + Math.random() * 1.5,
+        vy: 0.05 + Math.random() * 0.16,
+        vx: (Math.random() - 0.5) * 0.08,
+        ph: Math.random() * 6.283,
+        sp: 0.004 + Math.random() * 0.012,
+        gold: Math.random() < 0.55
+      });
+    }
+  }
+  function tick(){
+    if(!alive){ raf = null; return; }
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.clearRect(0, 0, W, H);
+    for(var i = 0; i < ps.length; i++){
+      var p = ps[i];
+      p.y += p.vy; p.ph += p.sp;
+      p.x += p.vx + Math.sin(p.ph) * 0.16;
+      if(p.y > H + 4){ p.y = -4; p.x = Math.random() * W; }
+      c.globalAlpha = 0.16 + Math.sin(p.ph) * 0.1;
+      c.fillStyle = p.gold ? '#F6DE9E' : tone;
+      c.beginPath(); c.arc(p.x, p.y, p.r, 0, 6.2832); c.fill();
+    }
+    c.globalAlpha = 1;
+    raf = requestAnimationFrame(tick);
+  }
+  size(); seed();
+  window.addEventListener('resize', function(){ size(); seed(); });
+  return {
+    start: function(){ if(REDUCE || alive) return; alive = true; if(!raf) raf = requestAnimationFrame(tick); },
+    stop: function(){ alive = false; }
+  };
+}
+
+/* ============ 翻转 + 落沙 ============ */
 function Tape(root, data){
   var self = this;
   this.busy = false;
-  var canvas = root.querySelector('canvas.particles');
+  var canvas = root.querySelector('canvas.sand');
   var ctx = canvas.getContext('2d');
-  var W = 0, H = 0, ps = [];
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var raf = null;
+  var W = 0, H = 0, ps = [], raf = null;
 
   function size(){
     var r = canvas.getBoundingClientRect();
-    if(r.width > 0){ W = r.width; H = r.height; canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio; }
+    if(r.width < 2) return;
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
   }
   size();
   window.addEventListener('resize', size);
 
-  function burst(){
-    var n = reduce ? 0 : 140;
-    for(var i=0;i<n;i++){
+  /* 沙粒带重力 + 底部堆积 */
+  function drain(){
+    if(REDUCE) return;
+    var n = 220;
+    for(var i = 0; i < n; i++){
       ps.push({
-        x: Math.random()*W,
-        y: -6 - Math.random()*H*0.35,
-        vy: 2.2 + Math.random()*3.4,
-        vx: (Math.random()-0.5)*0.7,
-        r: 0.8 + Math.random()*2.4,
-        a: 0.45 + Math.random()*0.5,
+        x: Math.random() * W,
+        y: -8 - Math.random() * H * 0.55,
+        vy: 1.6 + Math.random() * 4.2,
+        vx: (Math.random() - 0.5) * 0.9,
+        r: 0.6 + Math.random() * 2.1,
+        a: 0.35 + Math.random() * 0.55,
         life: 1,
-        gold: Math.random() < 0.4
+        settle: 0,
+        gold: Math.random() < 0.5
       });
     }
-    if(!raf){ raf = requestAnimationFrame(loop); }
+    if(!raf) raf = requestAnimationFrame(loop);
   }
-
   function loop(){
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-    ctx.clearRect(0,0,W,H);
-    ps.forEach(function(p){
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    var alive = 0;
+    for(var i = 0; i < ps.length; i++){
+      var p = ps[i];
+      if(p.settle > 0){ p.settle -= 1; alive++; continue; }
+      p.vy += 0.06;
       p.y += p.vy;
       p.x += p.vx;
-      p.life -= 0.025;
-      if(p.y > H || p.life <= 0){ p.life = 0; return; }
-      ctx.globalAlpha = Math.min(p.life, 1) * p.a;
-      ctx.fillStyle = p.gold ? '#E4B04A' : data.tone;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-    ps = ps.filter(function(p){ return p.life > 0 && p.y < H; });
-    if(ps.length > 0){
-      raf = requestAnimationFrame(loop);
-    } else {
-      stop();
+      p.life -= 0.008;
+      if(p.y >= H - 2){
+        p.y = H - 2 - Math.random() * 3;
+        p.settle = 18 + Math.random() * 26;   /* 短暂停留，制造堆积感 */
+        p.vy = 0;
+      }
+      if(p.life <= 0) continue;
+      alive++;
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.life)) * p.a;
+      ctx.fillStyle = p.gold ? '#F6DE9E' : data.tone;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
     }
-  }
-  function stop(){
-    if(raf){ cancelAnimationFrame(raf); raf = null; }
-    ctx.clearRect(0,0,W,H);
-    ps = [];
+    ctx.globalAlpha = 1;
+    ps = ps.filter(function(p){ return p.life > 0; });
+    if(alive > 0){ raf = requestAnimationFrame(loop); }
+    else { cancelAnimationFrame(raf); raf = null; ctx.clearRect(0, 0, W, H); ps = []; }
   }
 
   function flip(){
-    if(self.busy){ return; }
+    if(self.busy) return;
     self.busy = true;
-    root.setAttribute('aria-disabled','true');
-    if(reduce){
+    root.setAttribute('aria-disabled', 'true');
+    if(REDUCE){
       root.classList.toggle('flipped');
       self.busy = false;
       root.removeAttribute('aria-disabled');
       return;
     }
-    burst();
-    setTimeout(function(){
-      root.classList.toggle('flipped');
-    }, 850);
-    setTimeout(function(){
-      self.busy = false;
-      root.removeAttribute('aria-disabled');
-    }, 1750);
+    drain();
+    setTimeout(function(){ root.classList.toggle('flipped'); }, 900);
+    setTimeout(function(){ self.busy = false; root.removeAttribute('aria-disabled'); }, 1900);
   }
 
   root.addEventListener('click', flip);
   root.addEventListener('keydown', function(e){
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); flip(); }
   });
+
+  var field = SandField(canvas, data.tone);
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){
+      if(en[0].isIntersecting) field.start(); else field.stop();
+    }, { threshold: .15 }).observe(root);
+  } else { field.start(); }
 }
 
-/* ============ Hero 背景粒子 ============ */
+/* ============ Hero：液态流麻背景 ============ */
 (function(){
-  var cv = document.getElementById('heroCanvas');
+  var cv = document.getElementById('liquid');
+  if(!cv) return;
   var ctx = cv.getContext('2d');
-  var W=0,H=0, parts=[], running=true;
+  var W = 0, H = 0, parts = [], bands = [], raf = null, alive = true;
+
   function size(){
     var r = cv.getBoundingClientRect();
     W = r.width; H = r.height;
-    cv.width = W * devicePixelRatio; cv.height = H * devicePixelRatio;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
   }
-  size(); window.addEventListener('resize', size);
+  function seed(){
+    parts = [];
+    var n = Math.round(Math.min(150, (W * H) / 9000));
+    for(var i = 0; i < n; i++){
+      parts.push({
+        x: Math.random(), y: Math.random(),
+        r: 0.5 + Math.random() * 2.0,
+        vy: 0.00035 + Math.random() * 0.0009,
+        sway: 0.1 + Math.random() * 0.5,
+        ph: Math.random() * 6.283,
+        sp: 0.003 + Math.random() * 0.009,
+        gold: Math.random() < 0.62
+      });
+    }
+    bands = [];
+    for(var b = 0; b < 4; b++){
+      bands.push({ y: 0.26 + b * 0.17, amp: 26 + b * 14, sp: 0.0004 + b * 0.00013, ph: b * 1.7,
+        hue: b % 2 ? 'rgba(139,127,207,' : 'rgba(228,176,74,' });
+    }
+  }
+  function tick(t){
+    if(!alive){ raf = null; return; }
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
 
-  for(var i=0;i<110;i++){
-    parts.push({
-      x: Math.random(), y: Math.random(),
-      vy: 0.0004 + Math.random()*0.001,
-      sway: (Math.random()-0.5)*0.002,
-      r: 0.6 + Math.random()*1.9,
-      ph: Math.random()*6.2832,
-      sp: 0.004 + Math.random()*0.01
+    /* 缓慢流动的液态带 */
+    bands.forEach(function(bd){
+      bd.ph = (bd.ph || 0) + bd.sp * 16;
+      ctx.beginPath();
+      for(var x = 0; x <= W; x += 14){
+        var y = bd.y * H + Math.sin(x / (150 + bd.amp) + bd.ph) * bd.amp;
+        if(x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = bd.hue + '0.055)';
+      ctx.lineWidth = 26;
+      ctx.filter = 'blur(1px)';
+      ctx.stroke();
+      ctx.filter = 'none';
     });
-  }
-  var heroRaf = null;
-  function tick(){
-    if(!running){ heroRaf = null; return; }
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-    ctx.clearRect(0,0,W,H);
-    parts.forEach(function(p){
+
+    /* 悬浮金砂 */
+    for(var i = 0; i < parts.length; i++){
+      var p = parts[i];
       p.y += p.vy; p.ph += p.sp;
-      if(p.y > 1.02){ p.y = -0.02; p.x = Math.random(); }
-      var x = (p.x + Math.sin(p.ph)*0.015)*W;
-      var y = p.y*H;
-      ctx.globalAlpha = 0.16 + p.ph*0.02;
-      ctx.fillStyle = '#E4B04A';
+      if(p.y > 1.03){ p.y = -0.03; p.x = Math.random(); }
+      var x = (p.x + Math.sin(p.ph) * 0.012 * p.sway) * W;
+      var y = p.y * H;
+      var a = 0.10 + Math.abs(Math.sin(p.ph)) * 0.24;
+      ctx.globalAlpha = a;
+      ctx.fillStyle = p.gold ? '#F6DE9E' : '#C85A2A';
       ctx.beginPath(); ctx.arc(x, y, p.r, 0, 6.2832); ctx.fill();
-    });
+    }
     ctx.globalAlpha = 1;
-    heroRaf = requestAnimationFrame(tick);
+    ctx.globalCompositeOperation = 'source-over';
+    raf = requestAnimationFrame(tick);
   }
-  tick();
-  new IntersectionObserver(function(en){
-    var was = running;
-    running = en[0].isIntersecting;
-    if(running && !was && !heroRaf){ tick(); }
-  }, { threshold: 0 }).observe(cv);
+
+  size(); seed();
+  window.addEventListener('resize', function(){ size(); seed(); });
+
+  if(REDUCE){ return; }
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){
+      var was = alive;
+      alive = en[0].isIntersecting;
+      if(alive && !was && !raf) raf = requestAnimationFrame(tick);
+    }, { threshold: 0 }).observe(cv);
+  }
+  raf = requestAnimationFrame(tick);
 })();
 </script>
 </body>
