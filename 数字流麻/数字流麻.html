@@ -304,6 +304,43 @@ main,header,section,footer{position:relative;z-index:3}
 .acts-hint{position:absolute;right:18px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;
   font-size:10px;letter-spacing:.4em;color:var(--bone-3)}
 
+/* ---------- 开场影片（自演 12 秒，可跳过） ---------- */
+.intro{position:fixed;inset:0;z-index:70;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(70% 60% at 50% 46%,#0d0a06,#050403 72%);
+  transition:opacity .9s var(--ease)}
+.intro.out{opacity:0;pointer-events:none}
+.intro-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none;background:#050403}
+.intro.video-mode .intro-video{display:block}
+.intro.video-mode .intro-sand,.intro.video-mode .intro-stage{display:none}
+.intro.video-mode .intro-skip,.intro.video-mode .intro-bar{display:none}
+.intro.video-mode{cursor:pointer}
+.intro-sand{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.75}
+.intro-stage{position:relative;width:min(560px,86vw);height:min(660px,80vh);display:grid;place-items:center}
+.intro-card{position:absolute;width:min(300px,54vw);aspect-ratio:3/4;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(228,176,74,.34);opacity:0;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 5px rgba(228,176,74,.08)}
+.intro-card img{width:100%;height:100%;object-fit:cover;display:block}
+.intro-card figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 14px 14px;
+  font-size:12px;letter-spacing:.26em;color:var(--bone);text-align:center;
+  background:linear-gradient(180deg,transparent,rgba(6,5,4,.88))}
+.intro-line{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
+  width:min(460px,84vw);text-align:center;font-family:"Songti SC",serif;
+  font-size:clamp(13px,1.9vw,16px);line-height:1.9;letter-spacing:.1em;color:var(--gold-lt);
+  text-shadow:0 2px 20px rgba(0,0,0,.9);opacity:0}
+.intro-line .c{opacity:0;display:inline-block}
+.intro-title{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:14px;
+  text-align:center;opacity:0}
+.intro-title .it-k{font-size:11px;letter-spacing:.42em;color:var(--gold)}
+.intro-title .it-t{font-size:clamp(26px,5.4vw,52px);letter-spacing:.06em;line-height:1.3;font-weight:700}
+.intro-title .it-s{font-size:12.5px;letter-spacing:.22em;color:var(--bone-2)}
+.intro-skip{position:absolute;right:22px;top:22px;z-index:2;font:inherit;font-size:11.5px;letter-spacing:.18em;
+  color:var(--bone-2);background:rgba(11,9,6,.55);border:1px solid var(--hair-2);border-radius:999px;
+  padding:7px 15px;cursor:pointer;backdrop-filter:blur(8px)}
+.intro-skip:hover{color:var(--bone);border-color:var(--hair)}
+.intro-bar{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);width:min(240px,60vw);height:2px;
+  background:rgba(239,230,214,.14);overflow:hidden;border-radius:2px}
+.intro-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--gold-lt))}
+
 /* ---------- 3D 展厅走廊 ---------- */
 .no-js .hall{display:none}
 .hall{position:relative;height:340vh}
@@ -487,6 +524,24 @@ main,header,section,footer{position:relative;z-index:3}
 </style>
 </head>
 <body>
+<div class="intro" id="intro">
+  <video class="intro-video" id="introVideo" src="assets/intro.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+  <canvas class="intro-sand" id="introSand" aria-hidden="true"></canvas>
+  <div class="intro-stage">
+    <figure class="intro-card" data-i="0"><img src="assets/01-旧世界的落幕.png" alt=""><figcaption>旧世界的落幕</figcaption></figure>
+    <figure class="intro-card" data-i="1"><img src="assets/02-她们的名字.png" alt=""><figcaption>她们的名字</figcaption></figure>
+    <figure class="intro-card" data-i="2"><img src="assets/03-理想不会落幕.png" alt=""><figcaption>理想不会落幕</figcaption></figure>
+    <p class="intro-line" id="introLine"></p>
+    <div class="intro-title" id="introTitle">
+      <p class="it-k">思政实践 · 数字流麻</p>
+      <h2 class="it-t serif foil">落幕之后，仍有回响</h2>
+      <p class="it-s">历史的更替 · 人民的力量 · 理想的延续</p>
+    </div>
+  </div>
+  <button class="intro-skip" id="introSkip" type="button">跳过</button>
+  <div class="intro-bar" aria-hidden="true"><i id="introBar"></i></div>
+</div>
+
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="cursor-glow" id="cg" aria-hidden="true"></div>
 <div class="atmos" aria-hidden="true"></div>
@@ -979,6 +1034,180 @@ var PLAN = [
     en.forEach(function(x){ if (x.isIntersecting){ run(x.target); io.unobserve(x.target); } });
   }, { threshold:.4 });
   Array.prototype.forEach.call(nodes, function(n){ io.observe(n); });
+})();
+
+/* ============ 开场影片：自演 12 秒 ============ */
+(function introFilm(){
+  var el = document.getElementById('intro');
+  if (!el) return;
+
+  var played = false;
+  try { played = sessionStorage.getItem('dsh-intro') === '1'; } catch (e) {}
+
+  if (REDUCE || played){
+    if (el.parentNode) el.parentNode.removeChild(el);
+    return;
+  }
+  try { sessionStorage.setItem('dsh-intro', '1'); } catch (e) {}
+
+  var skip   = document.getElementById('introSkip');
+  var barEl  = document.getElementById('introBar');
+  var lineEl = document.getElementById('introLine');
+  var titleEl = document.getElementById('introTitle');
+  var cards  = [].slice.call(el.querySelectorAll('.intro-card'));
+  var cv     = document.getElementById('introSand');
+
+  var DUR  = 13000;
+  var WIN  = [[600, 3900], [3600, 6900], [6600, 9900]];
+  var POEMS = [
+    '旧世界的黄昏里，孕育着新世界的黎明。',
+    '历史从不缺少英雄，也不该遗忘千千万万个普通的名字。',
+    '有些人倒在黎明之前，但黎明从未停止到来。'
+  ];
+
+  var done = false;
+  function finish(){
+    if (done) return;
+    done = true;
+    el.classList.add('out');
+    document.body.style.overflow = '';
+    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 950);
+  }
+  document.body.style.overflow = 'hidden';
+  skip.addEventListener('click', finish);
+  window.addEventListener('keydown', function(e){ if (e.key === 'Escape') finish(); });
+
+  function ease(x){ return x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x); }
+
+  var ctx = cv.getContext('2d');
+  var W = 0, H = 0, parts = [];
+  function size(){
+    var r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+  }
+  size();
+  window.addEventListener('resize', size);
+  for (var i = 0; i < 90; i++){
+    parts.push({ x: Math.random(), y: Math.random(), r: 0.5 + Math.random() * 1.8,
+      vy: 0.0004 + Math.random() * 0.0011, ph: Math.random() * 6.28, sp: 0.01 + Math.random() * 0.02 });
+  }
+
+  var curChap = -1;
+  function setPoem(text){
+    lineEl.textContent = '';
+    lineEl._chars = [];
+    for (var i = 0; i < text.length; i++){
+      var s = document.createElement('span');
+      s.className = 'c';
+      s.textContent = text[i];
+      lineEl.appendChild(s);
+      lineEl._chars.push(s);
+    }
+  }
+  function paintPoem(k){
+    if (!lineEl._chars) return;
+    lineEl.style.opacity = 1;
+    for (var j = 0; j < lineEl._chars.length; j++){
+      var a = ease((k - j * 55) / 320);
+      lineEl._chars[j].style.opacity = a;
+      lineEl._chars[j].style.transform = 'translateY(' + (1 - a) * 6 + 'px)';
+    }
+  }
+
+  function paint(t){
+    var active = -1;
+    for (var ci = 0; ci < 3; ci++){
+      var card = cards[ci];
+      if (!card) continue;
+      var s = WIN[ci][0], e = WIN[ci][1];
+      if (t < s || t > e){ card.style.opacity = 0; continue; }
+      var kin  = ease((t - s) / 700);
+      var kout = ease((t - (e - 600)) / 600);
+      var op = Math.min(kin, 1 - kout);
+      var sc = 1.14 - 0.14 * kin - 0.06 * kout;
+      card.style.opacity = op.toFixed(3);
+      card.style.transform = 'scale(' + sc.toFixed(3) + ')';
+      if (op > 0.01) active = ci;
+    }
+
+    if (active >= 0){
+      if (active !== curChap){ curChap = active; setPoem(POEMS[active]); }
+      paintPoem(t - WIN[active][0] - 900);
+    } else {
+      lineEl.style.opacity = 0;
+      curChap = -1;
+    }
+
+    var kt = ease((t - 10000) / 900);
+    titleEl.style.opacity = kt.toFixed(3);
+    titleEl.style.transform = 'translateY(' + ((1 - kt) * 14).toFixed(1) + 'px)';
+
+    barEl.style.width = Math.min(100, (t / DUR) * 100).toFixed(2) + '%';
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    for (var p = 0; p < parts.length; p++){
+      var q = parts[p];
+      q.y += q.vy; q.ph += q.sp;
+      if (q.y > 1.02){ q.y = -0.02; q.x = Math.random(); }
+      ctx.globalAlpha = 0.14 + Math.abs(Math.sin(q.ph)) * 0.26;
+      ctx.fillStyle = '#F6DE9E';
+      ctx.beginPath();
+      ctx.arc(q.x * W, q.y * H, q.r, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /* 预览/出片钩子：把影片定格在指定毫秒 */
+  window.__introFreeze = function(ms){
+    done = true;
+    if (el.parentNode) { document.body.style.overflow = ''; }
+    el.style.transition = 'none';
+    el.style.opacity = '1';
+    paint(Math.max(0, Math.min(DUR, ms)));
+  };
+
+  var t0 = null;
+  function step(ts){
+    if (done) return;
+    if (t0 === null) t0 = ts;
+    var t = ts - t0;
+    paint(t);
+    if (t >= DUR){ finish(); return; }
+    requestAnimationFrame(step);
+  }
+  var video = el.querySelector('.intro-video');
+  var videoOk = false;
+  function startVideo(){ if (videoOk) return; videoOk = true; el.classList.add('video-mode'); el.addEventListener('click', finish); }
+  function startTimeline(){ requestAnimationFrame(step); paint(0); }
+
+  if (video && typeof video.play === 'function'){
+    /* 有视频就只走视频，避免和脚本时间线叠在一起 */
+    startVideo();
+    video.muted = true;
+    video.addEventListener('timeupdate', function(){
+      if (barEl && video.duration) barEl.style.width = Math.min(100, video.currentTime / video.duration * 100).toFixed(2) + '%';
+    });
+    video.addEventListener('ended', finish);
+    video.addEventListener('error', function(){
+      el.classList.remove('video-mode');
+      if (video.parentNode) video.parentNode.removeChild(video);
+      startTimeline();
+    });
+    var pr = video.play();
+    if (pr && pr.catch) pr.catch(function(){
+      /* 自动播放被拦：退回脚本时间线，别让用户面对黑屏 */
+      el.classList.remove('video-mode');
+      if (video.parentNode) video.parentNode.removeChild(video);
+      videoOk = false;
+      startTimeline();
+    });
+  } else {
+    startTimeline();
+  }
 })();
 
 /* ============ 3D 展厅：镜头推进 ============ */
