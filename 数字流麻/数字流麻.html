@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数字流麻 · 落幕之后，仍有回响</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A120B'/%3E%3Cpath d='M8 8h16l-6 8 6 8H8l6-8z' fill='none' stroke='%23E4B04A' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ============ 基础（先 375px） ============ */
+:root{
+  --ink:#17110B;
+  --ink2:#211809;
+  --bone:#EDE3D2;
+  --bone-dim:#BBAE97;
+  --amber:#C85A2A;
+  --gold:#E4B04A;
+  --violet:#5A3D5C;
+  --dusk:#2C2747;
+  --line:rgba(237,227,210,.22);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--bone);
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.serif{font-family:"Songti SC","Noto Serif CJK SC","STSong",serif}
+::selection{background:var(--gold);color:var(--ink)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+img{display:block;max-width:100%}
+
+/* 背景噪点层 */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background:radial-gradient(circle at 30% 20%,rgba(228,176,74,.05),transparent 55%),
+             radial-gradient(circle at 80% 70%,rgba(90,61,92,.10),transparent 60%);}
+
+/* ============ Hero ============ */
+.hero{position:relative;min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+  padding:64px 20px 48px;overflow:hidden;z-index:1}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero-inner{position:relative;z-index:1;max-width:1080px;margin:0 auto;width:100%;text-align:center}
+.eyebrow{display:inline-block;font-size:12px;letter-spacing:.35em;color:var(--gold);
+  border:1px solid rgba(228,176,74,.4);border-radius:999px;padding:6px 14px;margin-bottom:22px;
+  opacity:0;animation:fadeIn 1s .35s forwards}
+.hero-title{font-size:30px;line-height:1.35;font-weight:700;letter-spacing:.06em;margin-bottom:18px}
+.hero-title .ch{display:inline-block;opacity:0;animation:chIn .7s forwards;transform:translateY(.4em)}
+@keyframes chIn{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+.hero-sub{font-size:15px;color:var(--bone-dim);letter-spacing:.14em;margin-bottom:26px;opacity:0;
+  animation:fadeIn 1.2s 2s forwards}
+.rings{position:relative;height:56px;margin-bottom:18px;opacity:0;animation:fadeIn .6s 2.6s forwards}
+.ring{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;
+  border:1.5px solid rgba(228,176,74,.85);opacity:0;animation:ringOut 3.2s 3s infinite}
+.ring.r2{animation-delay:3.9s}
+@keyframes ringOut{0%{transform:scale(1);opacity:.9}60%{opacity:.25}100%{transform:scale(12);opacity:0}}
+.hero-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;
+  opacity:0;animation:fadeIn 1s 3.1s forwards}
+.tag{font-size:13px;padding:7px 14px;border:1px solid var(--line);border-radius:4px;color:var(--bone-dim)}
+.tag b{color:var(--bone);font-weight:600}
+.hero-hint{font-size:13px;color:var(--gold);opacity:0;animation:fadeIn 1s 3.8s forwards}
+.hero-hint svg{vertical-align:-2px;margin-right:4px}
+.hero-scroll{margin-top:26px;font-size:12px;color:var(--bone-dim);opacity:0;
+  animation:fadeIn 1s 4.5s forwards}
+.hero-scroll .down{display:block;margin:8px auto 0;width:1px;height:34px;
+  background:linear-gradient(var(--gold),transparent);animation:drop 1.6s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
+  55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ============ 展区 ============ */
+.section{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:56px 20px 40px}
+.sec-head{text-align:center;margin-bottom:34px}
+.sec-kicker{font-size:12px;letter-spacing:.32em;color:var(--gold);margin-bottom:10px}
+.sec-title{font-size:26px;letter-spacing:.08em}
+.sec-desc{font-size:14px;color:var(--bone-dim);margin-top:10px;max-width:620px;margin-left:auto;margin-right:auto}
+
+.tape-row{display:grid;grid-template-columns:1fr;gap:34px;justify-items:center}
+.tape{width:min(288px,88vw);cursor:pointer;user-select:none}
+.tape-stage{perspective:1400px;aspect-ratio:3/4;position:relative}
+.tape-inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,1,.36,1)}
+.tape.flipped .tape-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:10px;overflow:hidden;border:1px solid rgba(237,227,210,.28);
+  box-shadow:0 22px 44px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12)}
+.face-front{background:#000}
+.face-front img{width:100%;height:100%;object-fit:cover}
+.corner{position:absolute;left:14px;top:14px;font-size:12px;letter-spacing:.28em;color:var(--bone);
+  padding:6px 12px;background:rgba(23,17,11,.55);border-radius:3px;backdrop-filter:none}
+.flip-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:12px;
+  color:var(--bone);background:rgba(23,17,11,.55);padding:6px 14px;border-radius:999px;white-space:nowrap}
+.face-back{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;
+  padding:26px 24px;text-align:center}
+.face-back .b-kicker{font-size:12px;letter-spacing:.3em;opacity:.8;margin-bottom:14px}
+.face-back .b-title{font-size:24px;letter-spacing:.12em;margin-bottom:22px}
+.face-back .b-poem{font-size:18px;line-height:1.9;letter-spacing:.08em;margin-bottom:26px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 2px}
+.face-back .b-theory{font-size:12.5px;opacity:.92;letter-spacing:.05em}
+.tape canvas.particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;
+  border-radius:10px}
+.tape-note{text-align:center;font-size:13px;color:var(--bone-dim);margin-top:14px}
+.tape-note b{color:var(--bone);font-weight:600}
+.tape[aria-disabled="true"]{cursor:default}
+
+/* 章节配色 */
+.tape.era .face-back{background:linear-gradient(160deg,#3A2417,#22150C)}
+.tape.people .face-back{background:linear-gradient(160deg,#3A2A12,#241A09)}
+.tape.future .face-back{background:linear-gradient(160deg,#241E3E,#151226)}
+
+/* ============ 原理区 ============ */
+.theory-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:8px}
+.t-card{border:1px solid var(--line);border-radius:8px;padding:24px 20px;background:rgba(33,24,9,.32)}
+.t-no{font-size:12px;letter-spacing:.3em;color:var(--gold);margin-bottom:8px}
+.t-name{font-size:18px;letter-spacing:.06em;margin-bottom:8px}
+.t-link{font-size:13px;color:var(--gold);margin-bottom:12px;letter-spacing:.04em}
+.t-body{font-size:14px;color:var(--bone-dim)}
+.t-body b{color:var(--bone);font-weight:600}
+
+/* ============ 尾声 ============ */
+.epilogue{border-top:1px solid var(--line);margin-top:14px;padding-top:30px;text-align:center}
+.epilogue .ep-title{font-size:19px;letter-spacing:.08em;margin-bottom:14px}
+.epilogue p{font-size:14px;color:var(--bone-dim);max-width:640px;margin:0 auto 10px}
+.pill{display:inline-block;font-size:12.5px;border:1px solid rgba(228,176,74,.45);color:var(--gold);
+  padding:6px 14px;border-radius:4px;margin:6px 5px 0;letter-spacing:.04em}
+.footer{position:relative;z-index:1;text-align:center;padding:34px 20px 40px;font-size:12px;color:var(--bone-dim)}
+
+/* ============ 桌面增强 ============ */
+@media (min-width:768px){
+  .hero{padding:72px 40px 60px}
+  .hero-title{font-size:52px;letter-spacing:.08em}
+  .hero-sub{font-size:17px}
+  .sec-title{font-size:32px}
+  .tape-row{grid-template-columns:repeat(3,1fr);gap:26px}
+  .theory-grid{grid-template-columns:repeat(3,1fr)}
+  .t-card{padding:28px 24px}
+}
+@media (min-width:1200px){
+  .hero-title{font-size:64px}
+  .tape{width:min(300px,100%)}
+}
+
+/* ============ 低动效 ============ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01s !important;animation-iteration-count:1 !important;
+    transition-duration:.01s !important}
+  .hero-title .ch{opacity:1;transform:none}
+  .hero-hint,.hero-sub,.eyebrow,.hero-tags,.hero-scroll,.rings{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow">思政实践 · 实物作品的高新技术数字版</span>
+    <h1 class="hero-title serif" id="heroTitle">《落幕之后，仍有回响》</h1>
+    <p class="hero-sub">历史的更替 · 人民的力量 · 理想的延续</p>
+    <div class="rings" aria-hidden="true"><span class="ring"></span><span class="ring r2"></span></div>
+    <div class="hero-tags">
+      <span class="tag"><b>第一章 · 时代</b>　旧世界的落幕</span>
+      <span class="tag"><b>第二章 · 人民</b>　她们的名字</span>
+      <span class="tag"><b>第三章 · 未来</b>　理想不会落幕</span>
+    </div>
+    <p class="hero-hint">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18M5 10l7 5 7-5"/></svg>
+      点击下方流麻，翻转它——沙落字现，回响开始
+    </p>
+    <div class="hero-scroll">向下滚动<span class="down" aria-hidden="true"></span></div>
+  </div>
+</header>
+
+<!-- ===== 视图：三联数字流麻 ===== -->
+<main class="section" id="gallery">
+  <div class="sec-head">
+    <p class="sec-kicker">THE TRIPTYCH</p>
+    <h2 class="sec-title serif">三联数字流麻</h2>
+    <p class="sec-desc">三块流麻，三段历史回响。点击任意一块，细沙沉降、画面翻转，诗句与原理在沙落之后显现。</p>
+  </div>
+  <div class="tape-row" id="tapeRow"></div>
+</main>
+
+<!-- ===== 视图：原理阐释 ===== -->
+<section class="section" id="theory">
+  <div class="sec-head">
+    <p class="sec-kicker">MARXIST PERSPECTIVE</p>
+    <h2 class="sec-title serif">原理阐释</h2>
+    <p class="sec-desc">画面如何印证马克思主义基本原理——每一块流麻，都是一次从现象到原理的观看。</p>
+  </div>
+  <div class="theory-grid" id="theoryGrid"></div>
+</section>
+
+<!-- ===== 视图：尾声 ===== -->
+<section class="section">
+  <div class="epilogue">
+    <h3 class="ep-title serif">一件实物，两种回响</h3>
+    <p>本页是《落幕之后，仍有回响》的<b>高新技术数字版</b>：以粒子系统模拟流沙沉降，以 3D 翻转复刻流麻的交互体验。</p>
+    <p>它与团队手工制作的三联流麻实物互为表里——实物交付作品本体，数字版作为答辩演示与传播载体。</p>
+    <div>
+      <span class="pill">手绘/生成画面 + 手工注油组盒</span>
+      <span class="pill">粒子流沙 + 3D 翻转交互</span>
+      <span class="pill">原理引路 · 现实落脚</span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">《落幕之后，仍有回响》 · 马克思主义基本原理课程实践 · 2026</footer>
+
+<script>
+/* ============ 数据 ============ */
+var TAPES = [
+  { id:'era', no:'一', chapter:'时代', title:'旧世界的落幕',
+    img:'assets/01-旧世界的落幕.png', tone:'#C85A2A',
+    poem:'旧世界的黄昏里，孕育着新世界的黎明。',
+    theory:'社会基本矛盾与社会形态发展',
+    body:'生产力与生产关系的矛盾运动，推动社会形态由低级向高级更替。画面中旧工厂群的落幕，恰是旧的生产关系让位于新形态的写照——落幕不是终结，而是新世界孕育的起点。' },
+  { id:'people', no:'二', chapter:'人民', title:'她们的名字',
+    img:'assets/02-她们的名字.png', tone:'#E4B04A',
+    poem:'历史从不缺少英雄，也不该遗忘千千万万个普通的名字。',
+    theory:'人民群众是历史的创造者',
+    body:'历史是人民群众创造的。纺织女工、工人与农民，这些沉默的名字构成历史真正的底色；英雄出自人民，历史的主体永远是千千万万个普通劳动者。' },
+  { id:'future', no:'三', chapter:'未来', title:'理想不会落幕',
+    img:'assets/03-理想不会落幕.png', tone:'#8B7FCF',
+    poem:'有些人倒在黎明之前，但黎明从未停止到来。',
+    theory:'社会发展的前进性与曲折性 · 理想与实践',
+    body:'社会发展是前进性与曲折性的统一。青年走过黑夜走向黎明，正是这一规律的个体映照：理想不因挫折而熄灭，它必须经由人的实践，一次次走向现实。' }
+];
+
+/* ============ 渲染 ============ */
+(function render(){
+  var row = document.getElementById('tapeRow');
+  TAPES.forEach(function(t){
+    var el = document.createElement('div');
+    el.className = 'tape ' + t.id;
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','翻转流麻：' + t.chapter + '，' + t.title);
+    el.innerHTML =
+      '<div class="tape-stage">' +
+        '<div class="tape-inner">' +
+          '<div class="face face-front">' +
+            '<img src="' + t.img + '" alt="' + t.chapter + '《' + t.title + '》画面">' +
+            '<span class="corner">第' + t.no + '章 · ' + t.chapter + '</span>' +
+            '<span class="flip-hint">点击翻转 · 沙落字现</span>' +
+          '</div>' +
+          '<div class="face face-back">' +
+            '<p class="b-kicker">第' + t.no + '章 · ' + t.chapter + ' · ' + t.title + '</p>' +
+            '<p class="b-poem serif">' + t.poem + '</p>' +
+            '<p class="b-theory">' + t.theory + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<canvas class="particles" aria-hidden="true"></canvas>' +
+      '</div>' +
+      '<p class="tape-note"><b>' + t.chapter + '</b> · 沙落之后，<b>' + t.theory.split(' · ')[0] + '</b></p>';
+    row.appendChild(el);
+    new Tape(el, t);
+  });
+  var grid = document.getElementById('theoryGrid');
+  TAPES.forEach(function(t){
+    var c = document.createElement('article');
+    c.className = 't-card';
+    c.innerHTML =
+      '<p class="t-no">第' + t.no + '章 · ' + t.chapter + '</p>' +
+      '<h3 class="t-name serif">' + t.title + '</h3>' +
+      '<p class="t-link">' + t.theory + '</p>' +
+      '<p class="t-body">' + t.body + '</p>';
+    grid.appendChild(c);
+  });
+})();
+
+/* ============ 标题逐字动画 ============ */
+(function(){
+  var el = document.getElementById('heroTitle');
+  var txt = el.textContent;
+  el.textContent = '';
+  var arr = txt.split('');
+  arr.forEach(function(ch,i){
+    var s = document.createElement('span');
+    s.className = 'ch';
+    s.textContent = ch;
+    s.style.animationDelay = (0.55 + i*0.07) + 's';
+    el.appendChild(s);
+  });
+})();
+
+/* ============ 流麻翻转 + 粒子 ============ */
+function Tape(root, data){
+  var self = this;
+  this.busy = false;
+  var canvas = root.querySelector('canvas.particles');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0, ps = [];
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var raf = null;
+
+  function size(){
+    var r = canvas.getBoundingClientRect();
+    if(r.width > 0){ W = r.width; H = r.height; canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio; }
+  }
+  size();
+  window.addEventListener('resize', size);
+
+  function burst(){
+    var n = reduce ? 0 : 140;
+    for(var i=0;i<n;i++){
+      ps.push({
+        x: Math.random()*W,
+        y: -6 - Math.random()*H*0.35,
+        vy: 2.2 + Math.random()*3.4,
+        vx: (Math.random()-0.5)*0.7,
+        r: 0.8 + Math.random()*2.4,
+        a: 0.45 + Math.random()*0.5,
+        life: 1,
+        gold: Math.random() < 0.4
+      });
+    }
+    if(!raf){ raf = requestAnimationFrame(loop); }
+  }
+
+  function loop(){
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    ctx.clearRect(0,0,W,H);
+    ps.forEach(function(p){
+      p.y += p.vy;
+      p.x += p.vx;
+      p.life -= 0.025;
+      if(p.y > H || p.life <= 0){ p.life = 0; return; }
+      ctx.globalAlpha = Math.min(p.life, 1) * p.a;
+      ctx.fillStyle = p.gold ? '#E4B04A' : data.tone;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ps = ps.filter(function(p){ return p.life > 0 && p.y < H; });
+    if(ps.length > 0){
+      raf = requestAnimationFrame(loop);
+    } else {
+      stop();
+    }
+  }
+  function stop(){
+    if(raf){ cancelAnimationFrame(raf); raf = null; }
+    ctx.clearRect(0,0,W,H);
+    ps = [];
+  }
+
+  function flip(){
+    if(self.busy){ return; }
+    self.busy = true;
+    root.setAttribute('aria-disabled','true');
+    if(reduce){
+      root.classList.toggle('flipped');
+      self.busy = false;
+      root.removeAttribute('aria-disabled');
+      return;
+    }
+    burst();
+    setTimeout(function(){
+      root.classList.toggle('flipped');
+    }, 850);
+    setTimeout(function(){
+      self.busy = false;
+      root.removeAttribute('aria-disabled');
+    }, 1750);
+  }
+
+  root.addEventListener('click', flip);
+  root.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); flip(); }
+  });
+}
+
+/* ============ Hero 背景粒子 ============ */
+(function(){
+  var cv = document.getElementById('heroCanvas');
+  var ctx = cv.getContext('2d');
+  var W=0,H=0, parts=[], running=true;
+  function size(){
+    var r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = W * devicePixelRatio; cv.height = H * devicePixelRatio;
+  }
+  size(); window.addEventListener('resize', size);
+
+  for(var i=0;i<110;i++){
+    parts.push({
+      x: Math.random(), y: Math.random(),
+      vy: 0.0004 + Math.random()*0.001,
+      sway: (Math.random()-0.5)*0.002,
+      r: 0.6 + Math.random()*1.9,
+      ph: Math.random()*6.2832,
+      sp: 0.004 + Math.random()*0.01
+    });
+  }
+  var heroRaf = null;
+  function tick(){
+    if(!running){ heroRaf = null; return; }
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    ctx.clearRect(0,0,W,H);
+    parts.forEach(function(p){
+      p.y += p.vy; p.ph += p.sp;
+      if(p.y > 1.02){ p.y = -0.02; p.x = Math.random(); }
+      var x = (p.x + Math.sin(p.ph)*0.015)*W;
+      var y = p.y*H;
+      ctx.globalAlpha = 0.16 + p.ph*0.02;
+      ctx.fillStyle = '#E4B04A';
+      ctx.beginPath(); ctx.arc(x, y, p.r, 0, 6.2832); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    heroRaf = requestAnimationFrame(tick);
+  }
+  tick();
+  new IntersectionObserver(function(en){
+    var was = running;
+    running = en[0].isIntersecting;
+    if(running && !was && !heroRaf){ tick(); }
+  }, { threshold: 0 }).observe(cv);
+})();
+</script>
+</body>
+</html>
