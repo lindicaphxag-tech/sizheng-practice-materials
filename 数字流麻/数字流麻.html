@@ -260,6 +260,168 @@ main,header,section,footer{position:relative;z-index:3}
 .js .hero-title.in{clip-path:inset(0 0 0 0);filter:blur(0);opacity:1;
   transition:clip-path 1.25s var(--ease),filter 1s var(--ease),opacity .6s linear}
 
+/* ============================================================
+   新增：动态层（进度条 / 指针光晕 / 跑马灯 / 三幕 / 工艺 / 图表 / 时间线）
+   ============================================================ */
+.progress{position:fixed;left:0;top:0;height:2px;width:0;z-index:40;pointer-events:none;
+  background:linear-gradient(90deg,var(--amber),var(--gold),var(--gold-lt));
+  box-shadow:0 0 12px rgba(228,176,74,.6);transition:width .08s linear}
+.cursor-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;z-index:0;
+  pointer-events:none;border-radius:50%;opacity:0;transition:opacity .6s var(--ease);will-change:transform;
+  background:radial-gradient(circle,rgba(228,176,74,.10),rgba(228,176,74,.03) 42%,transparent 68%)}
+.ticker{margin-top:30px;width:min(680px,100%);margin-left:auto;margin-right:auto;overflow:hidden;
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.ticker-track{display:flex;gap:34px;width:max-content;animation:slide 34s linear infinite;
+  font-size:11.5px;letter-spacing:.28em;color:var(--bone-3);white-space:nowrap}
+.ticker-track b{color:var(--gold);font-weight:500}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* 三幕 */
+.acts{position:relative;height:330vh}
+.acts-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.acts-inner{position:relative;width:100%;max-width:var(--maxw);height:100%;padding:0 22px;margin:0 auto;
+  display:flex;align-items:center;justify-content:center}
+.act{position:absolute;inset:0;display:grid;grid-template-columns:1fr;gap:26px;align-items:center;
+  padding:12vh 0;opacity:0;transform:translateY(26px);pointer-events:none;
+  transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.act.on{opacity:1;transform:none;pointer-events:auto}
+.act-figure{position:relative;width:min(300px,72vw);margin:0 auto}
+.act-figure img{border-radius:12px;border:1px solid rgba(228,176,74,.34);
+  box-shadow:0 26px 54px -20px rgba(0,0,0,.85),0 0 0 6px rgba(228,176,74,.09);
+  transition:transform 1.2s var(--ease)}
+.act.on .act-figure img{transform:translateY(-6px)}
+.act-body{text-align:center}
+.act-no{font-size:11px;letter-spacing:.5em;color:var(--gold);margin-bottom:10px}
+.act-title{font-size:clamp(20px,3.4vw,30px);letter-spacing:.08em;margin-bottom:12px}
+.act-line{font-size:13.5px;color:var(--bone-2);line-height:1.95;max-width:520px;margin:0 auto 16px}
+.act-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.act-tags span{font-size:11px;letter-spacing:.08em;border:1px solid var(--hair-2);border-radius:999px;
+  padding:5px 12px;color:var(--bone-3)}
+.act-tags span b{color:var(--gold-lt);font-weight:500}
+.acts-rail{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);display:flex;gap:10px;align-items:center}
+.acts-rail i{width:22px;height:2px;background:var(--hair-2);transition:background .4s,width .4s}
+.acts-rail i.on{background:var(--gold);width:34px}
+.acts-hint{position:absolute;right:18px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;
+  font-size:10px;letter-spacing:.4em;color:var(--bone-3)}
+
+/* 工艺流程 */
+.flow{position:relative;display:grid;grid-template-columns:1fr;gap:14px}
+.step{border:1px solid var(--hair-2);border-radius:12px;padding:22px 20px 20px;
+  background:linear-gradient(172deg,rgba(239,230,214,.05),rgba(239,230,214,.012) 60%,transparent);
+  transition:transform .5s var(--ease),border-color .5s var(--ease)}
+.step:hover{transform:translateY(-3px);border-color:var(--hair)}
+.step-no{font-family:"Songti SC",serif;font-size:13px;letter-spacing:.2em;color:var(--gold);margin-bottom:8px}
+.step-t{font-size:15px;letter-spacing:.06em;margin-bottom:8px}
+.step-b{font-size:12.8px;color:var(--bone-2);line-height:1.9}
+.step-b b{color:var(--bone);font-weight:600}
+.flow-note{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.stat{flex:1 1 150px;max-width:220px;text-align:center;border:1px solid var(--hair-2);border-radius:12px;
+  padding:18px 12px;background:rgba(228,176,74,.04)}
+.stat-n{font-family:"Songti SC",serif;font-size:26px;color:var(--gold-lt);line-height:1.2}
+.stat-l{font-size:11px;color:var(--bone-3);letter-spacing:.14em;margin-top:6px}
+
+/* 对比图 */
+.chart-wrap{max-width:780px;margin:0 auto;border:1px solid var(--hair-2);border-radius:16px;
+  padding:22px 18px 12px;background:linear-gradient(180deg,rgba(239,230,214,.035),transparent)}
+.chart-wrap svg{width:100%;height:auto;display:block;overflow:visible}
+.c-dot{fill:var(--bone-3);transition:fill .4s}
+.c-dot.pick{fill:var(--gold);filter:drop-shadow(0 0 6px rgba(228,176,74,.7))}
+.c-lab{font-size:11px;fill:var(--bone-2);letter-spacing:.04em}
+.c-lab.pick{fill:var(--gold-lt)}
+.c-axis{stroke:var(--hair-2);stroke-width:1}
+.c-grid{stroke:rgba(239,230,214,.06);stroke-width:1}
+.c-tick{font-size:9px;fill:var(--bone-3)}
+.chart-note{text-align:center;font-size:11.5px;color:var(--bone-3);margin-top:10px}
+
+/* 技术矩阵 */
+.matrix{display:grid;grid-template-columns:1fr;gap:14px}
+.mx{border:1px solid var(--hair-2);border-radius:14px;padding:22px 20px;
+  background:linear-gradient(165deg,rgba(239,230,214,.055),transparent 62%);
+  transition:transform .5s var(--ease),border-color .5s var(--ease)}
+.mx:hover{transform:translateY(-3px);border-color:var(--hair)}
+.mx h4{font-size:15px;letter-spacing:.06em;margin-bottom:8px}
+.mx p{font-size:12.8px;color:var(--bone-2);line-height:1.9}
+.mx em{display:block;margin-top:10px;font-style:normal;font-size:11px;letter-spacing:.1em;color:var(--gold)}
+.mx-arrow{display:flex;align-items:center;gap:10px;justify-content:center;margin:18px 0;color:var(--bone-3);
+  font-size:11px;letter-spacing:.28em}
+.mx-arrow span{height:1px;width:52px;background:linear-gradient(90deg,transparent,var(--hair),transparent)}
+.mx-out{border:1px solid var(--hair);border-radius:14px;padding:24px;text-align:center;
+  background:radial-gradient(90% 120% at 50% 0%,rgba(228,176,74,.12),transparent 70%)}
+.mx-out b{font-family:"Songti SC",serif;font-size:19px;letter-spacing:.08em;color:var(--gold-lt)}
+
+/* 原理卡展开 */
+.t-more{margin-top:14px;border-top:1px solid var(--hair-2);padding-top:12px}
+.t-more summary{cursor:pointer;font-size:11.5px;letter-spacing:.14em;color:var(--gold);
+  list-style:none;display:flex;align-items:center;gap:6px}
+.t-more summary::-webkit-details-marker{display:none}
+.t-more summary::after{content:"展开";font-size:10px;opacity:.7}
+.t-more[open] summary::after{content:"收起"}
+.t-more p{font-size:12.8px;color:var(--bone-2);line-height:1.95;margin-top:10px}
+
+/* 参考片单 */
+.refs{display:grid;grid-template-columns:1fr;gap:10px}
+.ref{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+  padding:14px 16px;border:1px solid var(--hair-2);border-radius:10px;color:inherit;
+  text-decoration:none;background:rgba(239,230,214,.02);
+  transition:background .4s var(--ease),border-color .4s var(--ease),transform .4s var(--ease)}
+.ref:hover{background:rgba(228,176,74,.06);border-color:var(--hair);transform:translateX(4px)}
+.ref-i{font-family:"Songti SC",serif;font-size:12px;color:var(--gold);letter-spacing:.1em}
+.ref-t{display:block;font-size:13.2px;color:var(--bone)}
+.ref-d{display:block;font-size:11.5px;color:var(--bone-3);margin-top:3px}
+.ref-go{font-size:10.5px;letter-spacing:.2em;color:var(--gold);opacity:.7}
+
+/* 时间线 */
+.timeline{position:relative;display:grid;grid-template-columns:1fr;gap:12px}
+.tl{position:relative;padding:18px 20px 18px 34px;border-radius:12px;border:1px solid var(--hair-2);
+  background:linear-gradient(90deg,rgba(228,176,74,.05),transparent 60%)}
+.tl::before{content:"";position:absolute;left:14px;top:26px;width:7px;height:7px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 12px rgba(228,176,74,.8)}
+.tl-d{font-size:11px;letter-spacing:.16em;color:var(--gold);margin-bottom:5px}
+.tl-t{font-size:13.6px;color:var(--bone);margin-bottom:4px}
+.tl-w{font-size:11.5px;color:var(--bone-3)}
+
+/* 答辩 */
+.qa{display:grid;grid-template-columns:1fr;gap:12px}
+.qa details{border:1px solid var(--hair-2);border-radius:12px;padding:18px 20px;
+  background:rgba(239,230,214,.025);transition:border-color .4s var(--ease)}
+.qa details[open]{border-color:var(--hair);background:rgba(228,176,74,.05)}
+.qa summary{cursor:pointer;list-style:none;font-size:13.6px;color:var(--bone);
+  display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"＋";color:var(--gold);font-size:14px;line-height:1.2}
+.qa details[open] summary::after{content:"－"}
+.qa p{font-size:12.8px;color:var(--bone-2);line-height:1.95;margin-top:12px;padding-top:12px;
+  border-top:1px solid var(--hair-2)}
+
+/* 交付清单 */
+.deliver{list-style:none;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+.deliver li{font-size:11.5px;color:var(--bone-3);border:1px dashed var(--hair-2);border-radius:8px;padding:6px 12px}
+
+@media (min-width:768px){
+  .refs{grid-template-columns:repeat(2,1fr)}
+  .matrix{grid-template-columns:repeat(2,1fr)}
+  .qa{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:repeat(4,1fr)}
+  .timeline{grid-template-columns:repeat(5,1fr);gap:10px}
+  .tl{padding:28px 16px 18px}
+  .tl::before{left:16px;top:16px}
+  .act{grid-template-columns:340px 1fr;gap:56px;text-align:left;padding:0}
+  .act-body{text-align:left}
+  .act-line{margin:0 0 16px}
+  .act-tags{justify-content:flex-start}
+  .act-figure{margin:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .ticker-track{animation:none}
+  .act{opacity:1!important;transform:none!important;position:relative;pointer-events:auto}
+  .acts{height:auto}
+  .acts-sticky{position:static;height:auto;display:block}
+  .acts-inner{display:block;height:auto;padding:60px 22px}
+  .acts-rail,.acts-hint{display:none}
+  .cursor-glow{display:none}
+}
+
 /* ---------- 动效开关：JS 存在且允许动效时才做入场 ---------- */
 .js .reveal{opacity:0;transform:translateY(18px)}
 .js .reveal.in{opacity:1;transform:none}
@@ -275,6 +437,8 @@ main,header,section,footer{position:relative;z-index:3}
 </style>
 </head>
 <body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="cursor-glow" id="cg" aria-hidden="true"></div>
 <div class="atmos" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
@@ -292,6 +456,14 @@ main,header,section,footer{position:relative;z-index:3}
       <span class="chip" data-tone="era"><b>第一章 · 时代</b><span>旧世界的落幕</span></span>
       <span class="chip" data-tone="people"><b>第二章 · 人民</b><span>她们的名字</span></span>
       <span class="chip" data-tone="future"><b>第三章 · 未来</b><span>理想不会落幕</span></span>
+    </div>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span><b>社会基本矛盾</b></span><span>生产力 · 生产关系</span><span><b>人民群众是历史的创造者</b></span>
+        <span>前进性与曲折性</span><span><b>理想与实践</b></span><span>流沙沉降 · 沙落字现</span>
+        <span><b>社会基本矛盾</b></span><span>生产力 · 生产关系</span><span><b>人民群众是历史的创造者</b></span>
+        <span>前进性与曲折性</span><span><b>理想与实践</b></span><span>流沙沉降 · 沙落字现</span>
+      </div>
     </div>
     <p class="hero-hint">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v18M5 10l7 5 7-5"/></svg>
@@ -311,6 +483,110 @@ main,header,section,footer{position:relative;z-index:3}
   <div class="tape-row" id="tapeRow"></div>
 </main>
 
+<!-- ================= 三幕 ================= -->
+<section class="acts" id="acts" aria-label="三幕叙事">
+  <div class="acts-sticky">
+    <div class="acts-inner">
+      <article class="act" data-act="0">
+        <figure class="act-figure"><img src="assets/01-旧世界的落幕.png" alt="第一章《旧世界的落幕》画面"></figure>
+        <div class="act-body">
+          <p class="act-no">ACT Ⅰ / 时代</p>
+          <h3 class="act-title serif">旧世界的落幕</h3>
+          <p class="act-line">老旧工厂群剪影、烟囱齿轮、铁轨、暮色晚霞与一线晨光。旧的形态正在退场，新的可能已经在地平线上。</p>
+          <div class="act-tags">
+            <span>主色 <b>深褐黑 · 焦糖橙 · 暮紫</b></span>
+            <span>闪粉 <b>金色 + 少量黑砂</b></span>
+            <span>原理 <b>社会基本矛盾与社会形态发展</b></span>
+          </div>
+        </div>
+      </article>
+      <article class="act" data-act="1">
+        <figure class="act-figure"><img src="assets/02-她们的名字.png" alt="第二章《她们的名字》画面"></figure>
+        <div class="act-body">
+          <p class="act-no">ACT Ⅱ / 人民</p>
+          <h3 class="act-title serif">她们的名字</h3>
+          <p class="act-line">纺织女工、工人、农民群像，车间与麦田交织，暖金逆光。历史从来不是少数人的传记，而是千万人的日常。</p>
+          <div class="act-tags">
+            <span>主色 <b>暖金 · 赭红 · 象牙</b></span>
+            <span>闪粉 <b>暖金亮片 + 细碎珍珠粉</b></span>
+            <span>原理 <b>人民群众是历史的创造者</b></span>
+          </div>
+        </div>
+      </article>
+      <article class="act" data-act="2">
+        <figure class="act-figure"><img src="assets/03-理想不会落幕.png" alt="第三章《理想不会落幕》画面"></figure>
+        <div class="act-body">
+          <p class="act-no">ACT Ⅲ / 未来</p>
+          <h3 class="act-title serif">理想不会落幕</h3>
+          <p class="act-line">青年背影走过黑夜走向黎明，路灯与树影拉出纵深，霞光展开成扇面。路是曲折的，方向是向前的。</p>
+          <div class="act-tags">
+            <span>主色 <b>深蓝紫 · 暖金 · 象牙白</b></span>
+            <span>闪粉 <b>蓝紫闪粉 + 星星金片</b></span>
+            <span>原理 <b>前进性与曲折性 · 理想与实践</b></span>
+          </div>
+        </div>
+      </article>
+      <div class="acts-rail" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <p class="acts-hint" aria-hidden="true">滚动换幕</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 工艺流程 ================= -->
+<section class="section" id="flow">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">CRAFT PIPELINE</p>
+    <h2 class="sec-title serif">一块流麻是怎么做出来的</h2>
+    <p class="sec-desc">从打印到封孔，八步做完一块；三块成组，才是「三联」。</p>
+  </div>
+  <div class="flow">
+    <article class="step reveal"><p class="step-no">STEP 01</p><h4 class="step-t">打印</h4><p class="step-b">按内页尺寸等比打印画面层与文字层，<b>300 dpi</b>，光面相纸或硫酸纸更通透。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 02</p><h4 class="step-t">贴层</h4><p class="step-b">画面层贴前板内侧；文字层按排版覆于其上，或贴背板内侧，做出<b>翻转后字现</b>的层次。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 03</p><h4 class="step-t">组装</h4><p class="step-b">前板 + 内页 + 背板合拢，四周先预固定，别急着上胶。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 04</p><h4 class="step-t">注油</h4><p class="step-b">注射器从注油孔注入流沙液至 <b>85%–90%</b>，按该联配色加闪粉，先少后多。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 05</p><h4 class="step-t">排泡</h4><p class="step-b">留一小截空气，倾斜翻转让气泡聚到孔口，用气泡针排掉。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 06</p><h4 class="step-t">密封</h4><p class="step-b">UV 胶封注油孔，静置固化；<b>两次封口</b>、过夜再翻转最稳。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 07</p><h4 class="step-t">检验</h4><p class="step-b">翻转 <b>20 次</b>：流沙顺畅、无漏油、文字始终清晰可见。</p></article>
+    <article class="step reveal"><p class="step-no">STEP 08</p><h4 class="step-t">组合</h4><p class="step-b">三块装上展示架，配总主题说明牌，实物才成立。</p></article>
+  </div>
+  <div class="flow-note">
+    <div class="stat reveal"><div class="stat-n" data-count="30" data-suffix=" 分钟">0</div><div class="stat-l">单块 15–30 分钟</div></div>
+    <div class="stat reveal"><div class="stat-n" data-count="3" data-suffix=" 小时">0</div><div class="stat-l">全套 2–3 小时</div></div>
+    <div class="stat reveal"><div class="stat-n" data-count="300" data-suffix=" ml">0</div><div class="stat-l">流沙液 · 甘油兑水 1:1</div></div>
+    <div class="stat reveal"><div class="stat-n" data-count="120" data-prefix="¥" data-suffix=" 内">0</div><div class="stat-l">三块全套物料</div></div>
+  </div>
+</section>
+
+<!-- ================= 方案对比 ================= -->
+<section class="section" id="chart">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">COST × IMPACT</p>
+    <h2 class="sec-title serif">为什么是这套技术组合</h2>
+    <p class="sec-desc">横轴是学习与实现成本，纵轴是视觉冲击力。两周工期里，最优解不在右上角。</p>
+  </div>
+  <div class="chart-wrap reveal" id="chartBox">
+    <svg viewBox="0 0 700 420" role="img" aria-label="视觉方案成本与冲击力对比图" id="chartSvg"></svg>
+  </div>
+  <p class="chart-note">坐标为方案评估示意值（非实测数据），金色为最终选用的组合。</p>
+</section>
+
+<!-- ================= 技术矩阵 ================= -->
+<section class="section" id="matrix">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">TECH MATRIX</p>
+    <h2 class="sec-title serif">四条产线，合成一支片</h2>
+    <p class="sec-desc">四种媒介同屏是加分项，但 AI 镜头控制在 30% 以内——原理口播才是得分大头。</p>
+  </div>
+  <div class="matrix">
+    <article class="mx reveal"><h4>C4D + Octane + AE</h4><p>原理动画主干。已熟练的管线，负责讲清「生产力—生产关系」这类抽象关系。</p><em>主干 · 已掌握</em></article>
+    <article class="mx reveal"><h4>AI 生成视频</h4><p>现实案例镜头。算力中心、流水线、数字劳动场景，1–2 天出素材，效率远高于建模。</p><em>补真实感 · ≤30% 时长</em></article>
+    <article class="mx reveal"><h4>数字人微课</h4><p>理论讲解段。几分钟生成「虚拟主播讲原理」，与三维段落交替，避免全片同质。</p><em>低成本 · 1 天</em></article>
+    <article class="mx reveal"><h4>手工实拍 + AE</h4><p>开头与结尾的温度镜头。队友做的手工是实拍素材，也是本项目的实物本体。</p><em>情感落点</em></article>
+  </div>
+  <div class="mx-arrow" aria-hidden="true"><span></span>AE 统一合成<span></span></div>
+  <div class="mx-out reveal"><b>输出 6–7 分钟 MP4 · 1920×1080</b></div>
+</section>
+
 <!-- ================= 原理阐释 ================= -->
 <section class="section" id="theory">
   <div class="sec-head reveal">
@@ -319,6 +595,56 @@ main,header,section,footer{position:relative;z-index:3}
     <p class="sec-desc">画面如何印证马克思主义基本原理——每一块流麻，都是一次从现象到原理的观看。</p>
   </div>
   <div class="theory-grid" id="theoryGrid"></div>
+</section>
+
+<!-- ================= 参考片单 ================= -->
+<section class="section" id="refs">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">REFERENCE</p>
+    <h2 class="sec-title serif">动手前先看这些</h2>
+    <p class="sec-desc">同为「AI + 思政」的成品，以及拿一等奖的真人微电影——后者往往技术含量更低，说明叙事大于特效。</p>
+  </div>
+  <div class="refs">
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV1Pka1zPEyP/" target="_blank" rel="noopener"><span class="ref-i">01</span><span><span class="ref-t">《血书铸魂：夏明翰家书中的信仰绝唱》</span><span class="ref-d">情景还原 + 数字人诵读</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV11mpqzsEcD/" target="_blank" rel="noopener"><span class="ref-i">02</span><span><span class="ref-t">《鸦片战争前的中国与世界》</span><span class="ref-d">纯 AI 生成画面还原历史场景</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV1rqWgz3EUb/" target="_blank" rel="noopener"><span class="ref-i">03</span><span><span class="ref-t">《AI 再现兵团精神：金茂芳与她的拖拉机》</span><span class="ref-d">兵团 IP 数字人讲党史</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/av113339992645218/" target="_blank" rel="noopener"><span class="ref-i">04</span><span><span class="ref-t">《有为·无畏》</span><span class="ref-d">青年马克思 AI 数字人对话，与本选题最贴</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV16dpczVE5H/" target="_blank" rel="noopener"><span class="ref-i">05</span><span><span class="ref-t">《光影重逢——走近陈望道》</span><span class="ref-d">AI 影像修复 + 老照片动态活化</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV1CtSQYJEzJ/" target="_blank" rel="noopener"><span class="ref-i">06</span><span><span class="ref-t">《交换人生》</span><span class="ref-d">青马杯一等奖 · 真人剧情</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV1eT42127Yf/" target="_blank" rel="noopener"><span class="ref-i">07</span><span><span class="ref-t">《西行·长揖》</span><span class="ref-d">一等奖 · 真人剧情</span></span><span class="ref-go">B站</span></a>
+    <a class="ref reveal" href="https://www.bilibili.com/video/BV1Dm4y157Xa/" target="_blank" rel="noopener"><span class="ref-i">08</span><span><span class="ref-t">《格桑花开》</span><span class="ref-d">第六届全国一等奖</span></span><span class="ref-go">B站</span></a>
+  </div>
+</section>
+
+<!-- ================= 工期 ================= -->
+<section class="section" id="plan">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">SCHEDULE</p>
+    <h2 class="sec-title serif">第 7–8 教学周</h2>
+    <p class="sec-desc">2026-10-26 至 2026-11-08，两周五个阶段。</p>
+  </div>
+  <div class="timeline">
+    <div class="tl reveal"><p class="tl-d">10.26 – 10.28</p><p class="tl-t">定方案 · 采购 · 打印</p><p class="tl-w">全组</p></div>
+    <div class="tl reveal"><p class="tl-d">10.29 – 11.01</p><p class="tl-t">制作三块流麻 + 文字层 + 组合</p><p class="tl-w">队友手工为主 · 本人指导</p></div>
+    <div class="tl reveal"><p class="tl-d">11.02 – 11.04</p><p class="tl-t">拍摄过程 · 写创作说明</p><p class="tl-w">本人</p></div>
+    <div class="tl reveal"><p class="tl-d">11.05 – 11.06</p><p class="tl-t">成品检验 · 装架 · 简介终稿</p><p class="tl-w">全组</p></div>
+    <div class="tl reveal"><p class="tl-d">11.07 – 11.08</p><p class="tl-t">提交实物 + 照片 + 说明</p><p class="tl-w">全组</p></div>
+  </div>
+</section>
+
+<!-- ================= 答辩预判 ================= -->
+<section class="section" id="qa">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">DEFENCE</p>
+    <h2 class="sec-title serif">答辩会被问什么</h2>
+    <p class="sec-desc">四个最可能被追问的点，答案先写在这里。</p>
+  </div>
+  <div class="qa">
+    <details class="reveal"><summary>画面是 AI 生成的，算原创吗？</summary><p>AI 是执行工具。选题、三章结构、画面里的叙事要素、诗句立意、流麻的交互与工艺，都是团队原创设计；AI 只承担「把已定的画面画出来」这一步。答辩时附提示词与制作过程照片佐证。</p></details>
+    <details class="reveal"><summary>流麻和一张普通画作的区别在哪？</summary><p>区别在「观看需要动作」。静止的画只能看，流麻要翻转——沙落、字现，观众必须参与一次「历史流动」的模拟。这是隐喻，不是装饰。</p></details>
+    <details class="reveal"><summary>为什么偏偏选这三条原理？</summary><p>它们构成历史唯物主义的主干逻辑链：规律（社会基本矛盾）→ 主体（人民群众）→ 趋势（前进性与曲折性）。三块流麻正好一一对应，不是凑数。</p></details>
+    <details class="reveal"><summary>为什么不做成视频，而做实物？</summary><p>本轮作业可选实物作品，且实物能规避「念书式视频」的通病：一件能被把玩的作品，比一段被动观看的视频更能让人停下来。数字版用于答辩演示与传播。</p></details>
+  </div>
 </section>
 
 <!-- ================= 尾声 ================= -->
@@ -405,7 +731,9 @@ var DPR = Math.min(window.devicePixelRatio || 1, 2);
       '<p class="t-no"><i></i>第' + t.no + '章 · ' + t.chapter + '</p>' +
       '<h3 class="t-name serif">' + t.title + '</h3>' +
       '<p class="t-link">' + t.theory + '</p>' +
-      '<p class="t-body">' + t.body + '</p>';
+      '<p class="t-body">' + t.body + '</p>' +
+      '<details class="t-more"><summary>展开这段画面与原理的对应</summary><p>' +
+        ((typeof DEEP === 'object' && DEEP && DEEP[t.id]) ? DEEP[t.id] : '') + '</p></details>';
     grid.appendChild(c);
   });
 })();
@@ -573,6 +901,178 @@ function Tape(root, data){
     }, { threshold: .15 }).observe(root);
   } else { field.start(); }
 }
+
+/* ============ 数据：原理深读 + 方案坐标 ============ */
+var DEEP = {
+  era:'画面里的旧工厂、烟囱与铁轨，是「旧的生产关系」的具象：它们曾经代表先进生产力，后来变成束缚。当新的生产力在旧结构的缝隙里长出来，旧形态的退场就成了必然——所以画面上同时有暮色与一线晨光：落幕与新生是同一瞬间。',
+  people:'画面刻意不设唯一主角：女工、工人、农民并置，车间与麦田在同一画面里交错。史书上留下名字的往往是少数人，但让历史得以发生的，是这些没有名字的日常劳动。把镜头对准他们，本身就是对「谁是历史主体」的回答。',
+  future:'背影与路灯的纵深，把「路」画成画面结构本身：路是曲折的，方向却是向前的。黎明不是等来的，是走过黑夜才抵达的——这正是「理想必须经由实践」的视觉说法：没有那段夜路，就没有那张霞光扇面。'
+};
+
+var PLAN = [
+  { n:'C4D + OC + AE', x:7,   y:9,   pick:true  },
+  { n:'WebGL 交互',    x:8,   y:8.5, pick:false },
+  { n:'UE5 实时渲染',  x:9,   y:10,  pick:false },
+  { n:'AI 生成视频',   x:3.5, y:8,   pick:true  },
+  { n:'数字人微课',    x:2,   y:6,   pick:false },
+  { n:'手工实拍 + AE', x:5,   y:6,   pick:false },
+  { n:'CSS / SVG 动效',x:2.5, y:5,   pick:false }
+];
+
+/* ============ 对比图 ============ */
+(function renderChart(){
+  var svg = document.getElementById('chartSvg');
+  if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var W = 700, H = 420, L = 56, R = 16, T = 18, B = 46;
+  var pw = W - L - R, ph = H - T - B;
+  function px(v){ return L + (v / 10) * pw; }
+  function py(v){ return H - B - (v / 10) * ph; }
+  function el(name, attrs, text){
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  for (var g = 0; g <= 10; g += 2){
+    svg.appendChild(el('line', { x1:px(g), y1:T, x2:px(g), y2:H - B, class:'c-grid' }));
+    svg.appendChild(el('line', { x1:L, y1:py(g), x2:W - R, y2:py(g), class:'c-grid' }));
+    if (g > 0){
+      svg.appendChild(el('text', { x:px(g), y:H - B + 15, class:'c-tick', 'text-anchor':'middle' }, String(g)));
+      svg.appendChild(el('text', { x:L - 9, y:py(g) + 3, class:'c-tick', 'text-anchor':'end' }, String(g)));
+    }
+  }
+  svg.appendChild(el('line', { x1:L, y1:H - B, x2:W - R, y2:H - B, class:'c-axis' }));
+  svg.appendChild(el('line', { x1:L, y1:T, x2:L, y2:H - B, class:'c-axis' }));
+  svg.appendChild(el('text', { x:L + pw / 2, y:H - 10, class:'c-tick', 'text-anchor':'middle' }, '实现成本 / 学习门槛 →'));
+  svg.appendChild(el('text', { x:15, y:T + ph / 2, class:'c-tick', 'text-anchor':'middle',
+    transform:'rotate(-90 15 ' + (T + ph / 2) + ')' }, '视觉冲击力 →'));
+
+  var groups = [];
+  PLAN.forEach(function(p){
+    var gEl = el('g', { transform:'translate(' + px(p.x) + ',' + py(p.y) + ')' });
+    gEl.appendChild(el('circle', { cx:0, cy:0, r:p.pick ? 7 : 5.5, class:'c-dot' + (p.pick ? ' pick' : '') }));
+    var anchor = p.x > 6 ? 'end' : 'start';
+    gEl.appendChild(el('text', { x: p.x > 6 ? -12 : 12, y:4, class:'c-lab' + (p.pick ? ' pick' : ''),
+      'text-anchor':anchor }, p.n));
+    gEl.style.opacity = '0';
+    gEl.style.transition = 'opacity .7s var(--ease)';
+    svg.appendChild(gEl);
+    groups.push(gEl);
+  });
+
+  var fired = false;
+  function fire(){
+    if (fired) return;
+    fired = true;
+    groups.forEach(function(gEl, i){
+      setTimeout(function(){ gEl.style.opacity = '1'; }, i * 110);
+    });
+  }
+  if (REDUCE || !('IntersectionObserver' in window)){ fire(); return; }
+  new IntersectionObserver(function(en){
+    if (en[0].isIntersecting) fire();
+  }, { threshold:.3 }).observe(svg);
+})();
+
+/* ============ 数字滚动 ============ */
+(function counters(){
+  var nodes = document.querySelectorAll('[data-count]');
+  if (!nodes.length) return;
+  function label(elm, v){
+    return (elm.getAttribute('data-prefix') || '') + v + (elm.getAttribute('data-suffix') || '');
+  }
+  /* 先把终值写上：观察器没触发 / 无 JS 时也不会停在 0 */
+  Array.prototype.forEach.call(nodes, function(elm){
+    elm.textContent = label(elm, Number(elm.getAttribute('data-count')));
+  });
+  function run(elm){
+    var target = Number(elm.getAttribute('data-count'));
+    if (REDUCE) return;
+    var t0 = null;
+    function step(ts){
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / 1100);
+      var e = 1 - Math.pow(1 - k, 3);
+      elm.textContent = label(elm, Math.round(target * e));
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(en){
+    en.forEach(function(x){ if (x.isIntersecting){ run(x.target); io.unobserve(x.target); } });
+  }, { threshold:.4 });
+  Array.prototype.forEach.call(nodes, function(n){ io.observe(n); });
+})();
+
+/* ============ 三幕：滚动驱动 ============ */
+(function acts(){
+  var sec = document.getElementById('acts');
+  if (!sec) return;
+  var list = Array.prototype.slice.call(sec.querySelectorAll('.act'));
+  var rail = sec.querySelectorAll('.acts-rail i');
+  if (REDUCE){ list.forEach(function(a){ a.classList.add('on'); }); return; }
+  function update(){
+    var r = sec.getBoundingClientRect();
+    var total = sec.offsetHeight - window.innerHeight;
+    var p = total > 0 ? (-r.top) / total : 0;
+    p = Math.max(0, Math.min(1, p));
+    var idx = p < .34 ? 0 : (p < .67 ? 1 : 2);
+    list.forEach(function(a, i){ a.classList.toggle('on', i === idx); });
+    rail.forEach(function(x, i){ x.classList.toggle('on', i === idx); });
+  }
+  window.addEventListener('scroll', update, { passive:true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
+/* ============ 进度条 + 指针光晕 ============ */
+(function chrome(){
+  var bar = document.getElementById('progress');
+  var glow = document.getElementById('cg');
+  var queued = false;
+  function tick(){
+    queued = false;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = ((h > 0 ? window.scrollY / h : 0) * 100).toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', function(){
+    if (!queued){ queued = true; requestAnimationFrame(tick); }
+  }, { passive:true });
+  tick();
+
+  if (REDUCE || !glow) return;
+  var gx = 0, gy = 0, cx = 0, cy = 0, raf = null;
+  window.addEventListener('pointermove', function(e){
+    gx = e.clientX; gy = e.clientY;
+    if (raf) return;
+    raf = requestAnimationFrame(function loop(){
+      cx += (gx - cx) * .08; cy += (gy - cy) * .08;
+      glow.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+      glow.style.opacity = '1';
+      if (Math.abs(gx - cx) > .5 || Math.abs(gy - cy) > .5) raf = requestAnimationFrame(loop);
+      else raf = null;
+    });
+  }, { passive:true });
+})();
+
+/* ============ 面板悬停倾斜 ============ */
+(function tilt(){
+  if (REDUCE) return;
+  Array.prototype.forEach.call(document.querySelectorAll('.tape'), function(el){
+    var stage = el.querySelector('.tape-stage');
+    if (!stage) return;
+    el.addEventListener('pointermove', function(e){
+      if (el.classList.contains('flipped')) return;
+      var r = stage.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - .5;
+      var py = (e.clientY - r.top) / r.height - .5;
+      stage.style.transform = 'translateY(-7px) rotateX(' + (-py * 9).toFixed(2) + 'deg) rotateY(' + (px * 11).toFixed(2) + 'deg)';
+    });
+    el.addEventListener('pointerleave', function(){ stage.style.transform = ''; });
+  });
+})();
 
 /* ============ Hero：液态流麻背景 ============ */
 (function(){
