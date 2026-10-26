@@ -81,7 +81,8 @@ main,header,section,footer{position:relative;z-index:3}
 #liquid{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;
   opacity:.85;mask-image:radial-gradient(78% 62% at 50% 46%,#000 32%,transparent 78%);
   -webkit-mask-image:radial-gradient(78% 62% at 50% 46%,#000 32%,transparent 78%)}
-.hero-inner{position:relative;max-width:1040px;width:100%}
+.hero-inner{position:relative;max-width:1040px;width:100%;z-index:2}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(5,4,3,.62),rgba(5,4,3,.34) 38%,rgba(5,4,3,.82))}
 .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.34em;
   color:var(--gold-lt);border:1px solid var(--hair);border-radius:999px;padding:7px 16px;
   background:rgba(228,176,74,.05);backdrop-filter:blur(6px)}
@@ -341,6 +342,14 @@ main,header,section,footer{position:relative;z-index:3}
   background:rgba(239,230,214,.14);overflow:hidden;border-radius:2px}
 .intro-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--gold-lt))}
 
+/* ---------- 真实影像层（Pexels，已调色） ---------- */
+.film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;
+  mix-blend-mode:screen;will-change:opacity}
+.hero-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;
+  z-index:-2;opacity:.20;mix-blend-mode:screen;filter:saturate(.65) contrast(1.05) brightness(.9)}
+.act-film{position:absolute;inset:0;opacity:.14;z-index:0}
+.act-figure,.act-body{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){ .hero-film,.act-film{display:none} }
 /* ---------- 3D 展厅走廊 ---------- */
 .no-js .hall{display:none}
 .hall{position:relative;height:340vh}
@@ -551,6 +560,7 @@ main,header,section,footer{position:relative;z-index:3}
 <!-- ================= Hero ================= -->
 <header class="hero">
   <canvas id="liquid" aria-hidden="true"></canvas>
+  <video class="hero-film" id="heroFilm" src="assets/film-ink.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
   <div class="hero-inner">
     <span class="eyebrow"><i></i>思政实践 · 实物作品的高新技术数字版</span>
     <h1 class="hero-title serif foil" id="heroTitle">《落幕之后，仍有回响》</h1>
@@ -614,6 +624,7 @@ main,header,section,footer{position:relative;z-index:3}
   <div class="acts-sticky">
     <div class="acts-inner">
       <article class="act" data-act="0">
+        <video class="film act-film" src="assets/film-sky.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         <figure class="act-figure"><img src="assets/01-旧世界的落幕.png" alt="第一章《旧世界的落幕》画面"></figure>
         <div class="act-body">
           <p class="act-no">第一幕 / 时代</p>
@@ -646,6 +657,7 @@ main,header,section,footer{position:relative;z-index:3}
         </div>
       </article>
       <article class="act" data-act="2">
+        <video class="film act-film" src="assets/film-path.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         <figure class="act-figure"><img src="assets/03-理想不会落幕.png" alt="第三章《理想不会落幕》画面"></figure>
         <div class="act-body">
           <p class="act-no">第三幕 / 未来</p>
@@ -691,7 +703,7 @@ main,header,section,footer{position:relative;z-index:3}
   </div>
 </section>
 
-<footer class="footer">《落幕之后，仍有回响》<span class="dot">·</span>马克思主义基本原理课程实践<span class="dot">·</span>2026</footer>
+<footer class="footer"><span class="src">影像素材：Pexels（免费授权，已调色）</span><br>《落幕之后，仍有回响》<span class="dot">·</span>马克思主义基本原理课程实践<span class="dot">·</span>2026</footer>
 
 <script>
 document.documentElement.classList.remove('no-js');
@@ -1210,6 +1222,21 @@ var PLAN = [
   }
 })();
 
+/* ============ 真实影像：进入视口才播 ============ */
+(function films(){
+  var vids = [].slice.call(document.querySelectorAll('.hero-film, .act-film'));
+  if (!vids.length) return;
+  if (REDUCE){ vids.forEach(function(v){ v.removeAttribute('src'); v.load(); }); return; }
+  if (!('IntersectionObserver' in window)){ vids.forEach(function(v){ v.play().catch(function(){}); }); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      var v = e.target;
+      if (e.isIntersecting){ v.play().catch(function(){}); }
+      else { try { v.pause(); } catch (err) {} }
+    });
+  }, { threshold: .08 });
+  vids.forEach(function(v){ io.observe(v); });
+})();
 /* ============ 3D 展厅：镜头推进 ============ */
 (function hall(){
   var sec = document.getElementById('hall');
