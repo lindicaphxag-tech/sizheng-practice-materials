@@ -304,6 +304,36 @@ main,header,section,footer{position:relative;z-index:3}
 .acts-hint{position:absolute;right:18px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;
   font-size:10px;letter-spacing:.4em;color:var(--bone-3)}
 
+/* ---------- 3D 展厅走廊 ---------- */
+.no-js .hall{display:none}
+.hall{position:relative;height:340vh}
+.hall-pin{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1100px;perspective-origin:50% 46%;
+  background:
+    radial-gradient(60% 50% at 50% 42%,rgba(228,176,74,.10),transparent 62%),
+    radial-gradient(90% 60% at 50% 110%,rgba(200,90,42,.14),transparent 66%)}
+.hall-stage{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.hall-card{position:absolute;left:50%;top:50%;width:min(300px,56vw);aspect-ratio:3/4;
+  margin-left:calc(-1 * min(150px,28vw));margin-top:calc(-1 * min(200px,37.33vw));
+  border-radius:12px;overflow:hidden;border:1px solid rgba(228,176,74,.34);
+  box-shadow:0 34px 74px -22px rgba(0,0,0,.92),0 0 0 5px rgba(228,176,74,.08);
+  will-change:transform,opacity;backface-visibility:hidden}
+.hall-card img{width:100%;height:100%;object-fit:cover;display:block}
+.hall-card .hc-n{position:absolute;left:11px;top:11px;font-family:"Songti SC",serif;font-size:11px;
+  letter-spacing:.18em;color:var(--gold);background:rgba(6,5,4,.55);padding:4px 9px;border-radius:3px}
+.hall-card .hc-t{position:absolute;left:0;right:0;bottom:0;padding:16px 14px 13px;
+  font-size:12px;letter-spacing:.22em;color:var(--bone);text-align:center;
+  background:linear-gradient(180deg,transparent,rgba(6,5,4,.86))}
+.hall-vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(72% 62% at 50% 46%,transparent 44%,rgba(0,0,0,.74) 100%)}
+.hall-cap{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-size:11px;
+  letter-spacing:.34em;color:var(--bone-3)}
+@media (prefers-reduced-motion:reduce){
+  .hall{height:auto}
+  .hall-pin{position:static;height:auto;padding:40px 22px}
+  .hall-stage{position:static;display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+  .hall-card{position:static;opacity:1!important;transform:none!important;width:min(260px,80vw)}
+  .hall-cap{position:static;margin-top:14px}
+}
 /* 三幕：镜头式逐层演出 */
 .act-figure img{will-change:transform}
 .act-poem{font-size:clamp(16px,2.1vw,19px);line-height:1.9;letter-spacing:.08em;color:var(--gold-lt);
@@ -512,8 +542,20 @@ main,header,section,footer{position:relative;z-index:3}
   <div class="p-sign">2026 · 马克思主义基本原理课程实践</div>
 </section>
 
-<!-- ================= 三幕（滚到就自动演一遍） ================= -->
-<section class="acts" id="acts" aria-label="三幕叙事">
+<!-- ================= 3D 展厅 ================= -->
+<section class="hall" id="hall" aria-label="三维展厅">
+  <div class="hall-pin">
+    <div class="hall-stage">
+      <figure class="hall-card" data-i="0"><img src="assets/01-旧世界的落幕.png" alt="第一章《旧世界的落幕》画面"><span class="hc-n">Ⅰ</span><figcaption class="hc-t">旧世界的落幕</figcaption></figure>
+      <figure class="hall-card" data-i="1"><img src="assets/02-她们的名字.png" alt="第二章《她们的名字》画面"><span class="hc-n">Ⅱ</span><figcaption class="hc-t">她们的名字</figcaption></figure>
+      <figure class="hall-card" data-i="2"><img src="assets/03-理想不会落幕.png" alt="第三章《理想不会落幕》画面"><span class="hc-n">Ⅲ</span><figcaption class="hc-t">理想不会落幕</figcaption></figure>
+    </div>
+    <div class="hall-vig" aria-hidden="true"></div>
+    <p class="hall-cap">滚动，走进这条走廊</p>
+  </div>
+</section>
+
+<!-- ================= 三幕（滚到就自动演一遍） ================= --><section class="acts" id="acts" aria-label="三幕叙事">
   <div class="acts-sticky">
     <div class="acts-inner">
       <article class="act" data-act="0">
@@ -570,61 +612,6 @@ main,header,section,footer{position:relative;z-index:3}
   </div>
 </section>
 
-<!-- ================= 工艺流程 ================= -->
-<section class="section" id="flow">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">CRAFT PIPELINE</p>
-    <h2 class="sec-title serif">一块流麻是怎么做出来的</h2>
-    <p class="sec-desc">从打印到封孔，八步做完一块；三块成组，才是「三联」。</p>
-  </div>
-  <div class="flow">
-    <article class="step reveal"><p class="step-no">STEP 01</p><h4 class="step-t">打印</h4><p class="step-b">按内页尺寸等比打印画面层与文字层，<b>300 dpi</b>，光面相纸或硫酸纸更通透。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 02</p><h4 class="step-t">贴层</h4><p class="step-b">画面层贴前板内侧；文字层按排版覆于其上，或贴背板内侧，做出<b>翻转后字现</b>的层次。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 03</p><h4 class="step-t">组装</h4><p class="step-b">前板 + 内页 + 背板合拢，四周先预固定，别急着上胶。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 04</p><h4 class="step-t">注油</h4><p class="step-b">注射器从注油孔注入流沙液至 <b>85%–90%</b>，按该联配色加闪粉，先少后多。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 05</p><h4 class="step-t">排泡</h4><p class="step-b">留一小截空气，倾斜翻转让气泡聚到孔口，用气泡针排掉。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 06</p><h4 class="step-t">密封</h4><p class="step-b">UV 胶封注油孔，静置固化；<b>两次封口</b>、过夜再翻转最稳。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 07</p><h4 class="step-t">检验</h4><p class="step-b">翻转 <b>20 次</b>：流沙顺畅、无漏油、文字始终清晰可见。</p></article>
-    <article class="step reveal"><p class="step-no">STEP 08</p><h4 class="step-t">组合</h4><p class="step-b">三块装上展示架，配总主题说明牌，实物才成立。</p></article>
-  </div>
-  <div class="flow-note">
-    <div class="stat reveal"><div class="stat-n" data-count="30" data-suffix=" 分钟">0</div><div class="stat-l">单块 15–30 分钟</div></div>
-    <div class="stat reveal"><div class="stat-n" data-count="3" data-suffix=" 小时">0</div><div class="stat-l">全套 2–3 小时</div></div>
-    <div class="stat reveal"><div class="stat-n" data-count="300" data-suffix=" ml">0</div><div class="stat-l">流沙液 · 甘油兑水 1:1</div></div>
-    <div class="stat reveal"><div class="stat-n" data-count="120" data-prefix="¥" data-suffix=" 内">0</div><div class="stat-l">三块全套物料</div></div>
-  </div>
-</section>
-
-<!-- ================= 方案对比 ================= -->
-<section class="section" id="chart">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">COST × IMPACT</p>
-    <h2 class="sec-title serif">为什么是这套技术组合</h2>
-    <p class="sec-desc">横轴是学习与实现成本，纵轴是视觉冲击力。两周工期里，最优解不在右上角。</p>
-  </div>
-  <div class="chart-wrap reveal" id="chartBox">
-    <svg viewBox="0 0 700 420" role="img" aria-label="视觉方案成本与冲击力对比图" id="chartSvg"></svg>
-  </div>
-  <p class="chart-note">坐标为方案评估示意值（非实测数据），金色为最终选用的组合。</p>
-</section>
-
-<!-- ================= 技术矩阵 ================= -->
-<section class="section" id="matrix">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">TECH MATRIX</p>
-    <h2 class="sec-title serif">四条产线，合成一支片</h2>
-    <p class="sec-desc">四种媒介同屏是加分项，但 AI 镜头控制在 30% 以内——原理口播才是得分大头。</p>
-  </div>
-  <div class="matrix">
-    <article class="mx reveal"><h4>C4D + Octane + AE</h4><p>原理动画主干。已熟练的管线，负责讲清「生产力—生产关系」这类抽象关系。</p><em>主干 · 已掌握</em></article>
-    <article class="mx reveal"><h4>AI 生成视频</h4><p>现实案例镜头。算力中心、流水线、数字劳动场景，1–2 天出素材，效率远高于建模。</p><em>补真实感 · ≤30% 时长</em></article>
-    <article class="mx reveal"><h4>数字人微课</h4><p>理论讲解段。几分钟生成「虚拟主播讲原理」，与三维段落交替，避免全片同质。</p><em>低成本 · 1 天</em></article>
-    <article class="mx reveal"><h4>手工实拍 + AE</h4><p>开头与结尾的温度镜头。队友做的手工是实拍素材，也是本项目的实物本体。</p><em>情感落点</em></article>
-  </div>
-  <div class="mx-arrow" aria-hidden="true"><span></span>AE 统一合成<span></span></div>
-  <div class="mx-out reveal"><b>输出 6–7 分钟 MP4 · 1920×1080</b></div>
-</section>
-
 <!-- ================= 原理阐释 ================= -->
 <section class="section" id="theory">
   <div class="sec-head reveal">
@@ -633,56 +620,6 @@ main,header,section,footer{position:relative;z-index:3}
     <p class="sec-desc">画面如何印证马克思主义基本原理——每一块流麻，都是一次从现象到原理的观看。</p>
   </div>
   <div class="theory-grid" id="theoryGrid"></div>
-</section>
-
-<!-- ================= 参考片单 ================= -->
-<section class="section" id="refs">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">REFERENCE</p>
-    <h2 class="sec-title serif">动手前先看这些</h2>
-    <p class="sec-desc">同为「AI + 思政」的成品，以及拿一等奖的真人微电影——后者往往技术含量更低，说明叙事大于特效。</p>
-  </div>
-  <div class="refs">
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV1Pka1zPEyP/" target="_blank" rel="noopener"><span class="ref-i">01</span><span><span class="ref-t">《血书铸魂：夏明翰家书中的信仰绝唱》</span><span class="ref-d">情景还原 + 数字人诵读</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV11mpqzsEcD/" target="_blank" rel="noopener"><span class="ref-i">02</span><span><span class="ref-t">《鸦片战争前的中国与世界》</span><span class="ref-d">纯 AI 生成画面还原历史场景</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV1rqWgz3EUb/" target="_blank" rel="noopener"><span class="ref-i">03</span><span><span class="ref-t">《AI 再现兵团精神：金茂芳与她的拖拉机》</span><span class="ref-d">兵团 IP 数字人讲党史</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/av113339992645218/" target="_blank" rel="noopener"><span class="ref-i">04</span><span><span class="ref-t">《有为·无畏》</span><span class="ref-d">青年马克思 AI 数字人对话，与本选题最贴</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV16dpczVE5H/" target="_blank" rel="noopener"><span class="ref-i">05</span><span><span class="ref-t">《光影重逢——走近陈望道》</span><span class="ref-d">AI 影像修复 + 老照片动态活化</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV1CtSQYJEzJ/" target="_blank" rel="noopener"><span class="ref-i">06</span><span><span class="ref-t">《交换人生》</span><span class="ref-d">青马杯一等奖 · 真人剧情</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV1eT42127Yf/" target="_blank" rel="noopener"><span class="ref-i">07</span><span><span class="ref-t">《西行·长揖》</span><span class="ref-d">一等奖 · 真人剧情</span></span><span class="ref-go">B站</span></a>
-    <a class="ref reveal" href="https://www.bilibili.com/video/BV1Dm4y157Xa/" target="_blank" rel="noopener"><span class="ref-i">08</span><span><span class="ref-t">《格桑花开》</span><span class="ref-d">第六届全国一等奖</span></span><span class="ref-go">B站</span></a>
-  </div>
-</section>
-
-<!-- ================= 工期 ================= -->
-<section class="section" id="plan">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">SCHEDULE</p>
-    <h2 class="sec-title serif">第 7–8 教学周</h2>
-    <p class="sec-desc">2026-10-26 至 2026-11-08，两周五个阶段。</p>
-  </div>
-  <div class="timeline">
-    <div class="tl reveal"><p class="tl-d">10.26 – 10.28</p><p class="tl-t">定方案 · 采购 · 打印</p><p class="tl-w">全组</p></div>
-    <div class="tl reveal"><p class="tl-d">10.29 – 11.01</p><p class="tl-t">制作三块流麻 + 文字层 + 组合</p><p class="tl-w">队友手工为主 · 本人指导</p></div>
-    <div class="tl reveal"><p class="tl-d">11.02 – 11.04</p><p class="tl-t">拍摄过程 · 写创作说明</p><p class="tl-w">本人</p></div>
-    <div class="tl reveal"><p class="tl-d">11.05 – 11.06</p><p class="tl-t">成品检验 · 装架 · 简介终稿</p><p class="tl-w">全组</p></div>
-    <div class="tl reveal"><p class="tl-d">11.07 – 11.08</p><p class="tl-t">提交实物 + 照片 + 说明</p><p class="tl-w">全组</p></div>
-  </div>
-</section>
-
-<!-- ================= 答辩预判 ================= -->
-<section class="section" id="qa">
-  <div class="sec-head reveal">
-    <p class="sec-kicker">DEFENCE</p>
-    <h2 class="sec-title serif">答辩会被问什么</h2>
-    <p class="sec-desc">四个最可能被追问的点，答案先写在这里。</p>
-  </div>
-  <div class="qa">
-    <details class="reveal"><summary>画面是 AI 生成的，算原创吗？</summary><p>AI 是执行工具。选题、三章结构、画面里的叙事要素、诗句立意、流麻的交互与工艺，都是团队原创设计；AI 只承担「把已定的画面画出来」这一步。答辩时附提示词与制作过程照片佐证。</p></details>
-    <details class="reveal"><summary>流麻和一张普通画作的区别在哪？</summary><p>区别在「观看需要动作」。静止的画只能看，流麻要翻转——沙落、字现，观众必须参与一次「历史流动」的模拟。这是隐喻，不是装饰。</p></details>
-    <details class="reveal"><summary>为什么偏偏选这三条原理？</summary><p>它们构成历史唯物主义的主干逻辑链：规律（社会基本矛盾）→ 主体（人民群众）→ 趋势（前进性与曲折性）。三块流麻正好一一对应，不是凑数。</p></details>
-    <details class="reveal"><summary>为什么不做成视频，而做实物？</summary><p>本轮作业可选实物作品，且实物能规避「念书式视频」的通病：一件能被把玩的作品，比一段被动观看的视频更能让人停下来。数字版用于答辩演示与传播。</p></details>
-  </div>
 </section>
 
 <!-- ================= 尾声 ================= -->
@@ -1044,6 +981,51 @@ var PLAN = [
   Array.prototype.forEach.call(nodes, function(n){ io.observe(n); });
 })();
 
+/* ============ 3D 展厅：镜头推进 ============ */
+(function hall(){
+  var sec = document.getElementById('hall');
+  if (!sec) return;
+  var stage = sec.querySelector('.hall-stage');
+  var cards = [].slice.call(sec.querySelectorAll('.hall-card'));
+  if (!cards.length) return;
+
+  /* 三块画挂在纵深上；镜头沿 Z 轴穿过它们 */
+  var CONF = [
+    { z: -150,  x: -96, y:  26, ry:  8 },
+    { z: -880,  x:  98, y: -18, ry: -7 },
+    { z: -1610, x: -72, y:  16, ry:  6 }
+  ];
+  var TRAVEL = 1460;
+
+  function paint(p){
+    if (stage) stage.style.transform = 'translateZ(' + (p * TRAVEL).toFixed(1) + 'px)';
+    for (var i = 0; i < cards.length; i++){
+      var cfg = CONF[i] || CONF[0];
+      var dist = cfg.z + p * TRAVEL;
+      var op = 1 - Math.min(1, Math.abs(dist + 420) / 1150);
+      op = Math.max(0, Math.min(1, op * 1.6));
+      cards[i].style.transform =
+        'translate3d(' + cfg.x + 'px,' + cfg.y + 'px,' + cfg.z + 'px) rotateY(' + cfg.ry + 'deg)';
+      cards[i].style.opacity = op.toFixed(3);
+    }
+  }
+
+  if (REDUCE){ paint(0); return; }
+
+  var queued = false;
+  function update(){
+    queued = false;
+    var r = sec.getBoundingClientRect();
+    var total = sec.offsetHeight - window.innerHeight;
+    var t = total > 0 ? (-r.top) / total : 0;
+    paint(Math.max(0, Math.min(1, t)));
+  }
+  window.addEventListener('scroll', function(){
+    if (!queued){ queued = true; requestAnimationFrame(update); }
+  }, { passive:true });
+  window.addEventListener('resize', update);
+  update();
+})();
 /* ============ 三幕：滚到就自动演一遍 ============ */
 (function acts(){
   var sec = document.getElementById('acts');
