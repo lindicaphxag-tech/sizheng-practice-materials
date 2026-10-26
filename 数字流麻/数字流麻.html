@@ -350,6 +350,13 @@ main,header,section,footer{position:relative;z-index:3}
 .act-film{position:absolute;inset:0;opacity:.14;z-index:0}
 .act-figure,.act-body{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){ .hero-film,.act-film{display:none} }
+/* ---------- 成片段落 ---------- */
+.film-sec{max-width:1040px;margin:0 auto;padding:96px 22px 10px}
+.film-frame{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(228,176,74,.34);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 6px rgba(228,176,74,.07);background:#050403}
+.film-frame video{display:block;width:100%;height:auto}
+.film-cap{margin-top:16px;text-align:center;font-size:12px;letter-spacing:.16em;color:var(--bone-3)}
+.film-cap b{color:var(--gold-lt);font-weight:500}
 /* ---------- 3D 展厅走廊 ---------- */
 .no-js .hall{display:none}
 .hall{position:relative;height:340vh}
@@ -687,6 +694,22 @@ main,header,section,footer{position:relative;z-index:3}
     <p class="sec-desc">画面如何印证马克思主义基本原理——每一块流麻，都是一次从现象到原理的观看。</p>
   </div>
   <div class="theory-grid" id="theoryGrid"></div>
+</section>
+
+<!-- ================= 成片 ================= -->
+<section class="section" id="film">
+  <div class="sec-head reveal">
+    <p class="sec-kicker">THE FILM</p>
+    <h2 class="sec-title serif">三幕成片</h2>
+    <p class="sec-desc">46 秒，十个镜头：实拍与设计稿交替，天光 → 厂房 → 人群 → 夜路 → 黎明。</p>
+  </div>
+  <div class="film-sec reveal">
+    <div class="film-frame">
+      <video src="assets/film-triptych.mp4" controls playsinline preload="metadata"
+             poster="assets/01-旧世界的落幕.png"></video>
+    </div>
+    <p class="film-cap"><b>46 秒</b> · 实拍素材 + 三章设计稿 · 静音循环版用于展台，带控制条版本用于答辩</p>
+  </div>
 </section>
 
 <!-- ================= 尾声 ================= -->
