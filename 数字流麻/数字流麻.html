@@ -278,7 +278,7 @@ main,header,section,footer{position:relative;z-index:3}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* 三幕 */
-.acts{position:relative;height:330vh}
+.acts{position:relative;height:420vh}
 .acts-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .acts-inner{position:relative;width:100%;max-width:1180px;height:100%;padding:0 22px;margin:0 auto;
   display:grid;grid-template-columns:1fr;align-items:center}
@@ -300,10 +300,30 @@ main,header,section,footer{position:relative;z-index:3}
   padding:5px 12px;color:var(--bone-3)}
 .act-tags span b{color:var(--gold-lt);font-weight:500}
 .acts-rail{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);display:flex;gap:10px;align-items:center}
-.acts-rail i{width:22px;height:2px;background:var(--hair-2);transition:background .4s,width .4s}
-.acts-rail i.on{background:var(--gold);width:34px}
+.acts-rail i{width:26px;height:2px;background:var(--hair-2);transition:width .4s}
 .acts-hint{position:absolute;right:18px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;
   font-size:10px;letter-spacing:.4em;color:var(--bone-3)}
+
+/* 三幕：镜头式逐层演出 */
+.act-figure img{will-change:transform}
+.act-poem{font-size:clamp(16px,2.1vw,19px);line-height:1.9;letter-spacing:.08em;color:var(--gold-lt);
+  margin:0 0 16px;position:relative;padding-left:14px}
+.act-poem::before{content:"";position:absolute;left:0;top:.35em;bottom:.35em;width:2px;
+  background:linear-gradient(180deg,var(--gold),transparent)}
+.act-poem .c{opacity:0;display:inline-block;will-change:opacity,transform}
+.act-line{opacity:0;will-change:opacity,transform}
+.act-tags{opacity:0;will-change:opacity,transform}
+.act-body{max-width:560px}
+.act-sub{font-size:11px;letter-spacing:.34em;color:var(--bone-3);margin-top:14px;opacity:0}
+
+/* 序 */
+.prologue{max-width:760px;margin:0 auto;text-align:center;padding:96px 22px 10px}
+.prologue .p-mark{font-family:"Songti SC",serif;font-size:44px;color:var(--gold);opacity:.5;line-height:1;
+  margin-bottom:26px}
+.prologue p{font-size:clamp(14px,2.1vw,16.5px);line-height:2.05;color:var(--bone-2);margin-bottom:16px;
+  text-align:left}
+.prologue p b{color:var(--bone);font-weight:600}
+.prologue .p-sign{margin-top:26px;font-size:11px;letter-spacing:.4em;color:var(--gold)}
 
 /* 工艺流程 */
 .flow{position:relative;display:grid;grid-template-columns:1fr;gap:14px}
@@ -483,50 +503,68 @@ main,header,section,footer{position:relative;z-index:3}
   <div class="tape-row" id="tapeRow"></div>
 </main>
 
-<!-- ================= 三幕 ================= -->
+<!-- ================= 序 ================= -->
+<section class="prologue reveal">
+  <div class="p-mark serif" aria-hidden="true">序</div>
+  <p>三块亚克力，一捧沙。翻转一次，沙落一遍，字才浮出来。</p>
+  <p>我们想做的不是三张画，而是一个人必须<b>动手</b>才能读完的一段历史：第一块讲时代怎么更替，第二块讲谁在创造历史，第三块讲路为什么曲折，却始终朝前。</p>
+  <p>它们并排站着，合起来才是一句话——<b>落幕之后，仍有回响</b>。</p>
+  <div class="p-sign">2026 · 马克思主义基本原理课程实践</div>
+</section>
+
+<!-- ================= 三幕（滚到就自动演一遍） ================= -->
 <section class="acts" id="acts" aria-label="三幕叙事">
   <div class="acts-sticky">
     <div class="acts-inner">
       <article class="act" data-act="0">
         <figure class="act-figure"><img src="assets/01-旧世界的落幕.png" alt="第一章《旧世界的落幕》画面"></figure>
         <div class="act-body">
-          <p class="act-no">ACT Ⅰ / 时代</p>
+          <p class="act-no">第一幕 / 时代</p>
           <h3 class="act-title serif">旧世界的落幕</h3>
-          <p class="act-line">老旧工厂群剪影、烟囱齿轮、铁轨、暮色晚霞与一线晨光。旧的形态正在退场，新的可能已经在地平线上。</p>
-          <div class="act-tags">
+          <p class="act-poem serif">旧世界的黄昏里，孕育着新世界的黎明。</p>
+          <p class="act-line" data-in="0.34">黄昏压下来。厂房的骨架、停转的齿轮、生锈的铁轨，全被染成焦糖色；烟囱不再吐烟，只剩剪影。这是旧世界最体面的时刻——它还在，但它已经不是未来。</p>
+          <p class="act-line" data-in="0.56">画面右侧留了一线晨光，很窄，却是整张画唯一的冷调。旧的形态退场从来不是意外：新的生产力在旧结构里长出来之后，旧的壳就成了束缚。</p>
+          <div class="act-tags" data-in="0.74">
             <span>主色 <b>深褐黑 · 焦糖橙 · 暮紫</b></span>
             <span>闪粉 <b>金色 + 少量黑砂</b></span>
-            <span>原理 <b>社会基本矛盾与社会形态发展</b></span>
+            <span>流动 <b>缓慢</b></span>
           </div>
+          <p class="act-sub" data-in="0.84">对应原理 · 社会基本矛盾与社会形态发展</p>
         </div>
       </article>
       <article class="act" data-act="1">
         <figure class="act-figure"><img src="assets/02-她们的名字.png" alt="第二章《她们的名字》画面"></figure>
         <div class="act-body">
-          <p class="act-no">ACT Ⅱ / 人民</p>
+          <p class="act-no">第二幕 / 人民</p>
           <h3 class="act-title serif">她们的名字</h3>
-          <p class="act-line">纺织女工、工人、农民群像，车间与麦田交织，暖金逆光。历史从来不是少数人的传记，而是千万人的日常。</p>
-          <div class="act-tags">
+          <p class="act-poem serif">历史从不缺少英雄，也不该遗忘千千万万个普通的名字。</p>
+          <p class="act-line" data-in="0.34">镜头往人群里推。纺织女工的白帽、工人的背带裤、农民手里的锄头，都被暖金逆光镀了一层边。车间与麦田在同一张画里接壤——这是被历史书折叠起来的那一页。</p>
+          <p class="act-line" data-in="0.56">她们没有名字，甚至看不清脸。但正是这些重复的动作，把原料变成产品，把今天变成明天。历史不是少数人的传记，是千万个这样的清晨叠起来的。</p>
+          <div class="act-tags" data-in="0.74">
             <span>主色 <b>暖金 · 赭红 · 象牙</b></span>
             <span>闪粉 <b>暖金亮片 + 细碎珍珠粉</b></span>
-            <span>原理 <b>人民群众是历史的创造者</b></span>
+            <span>流动 <b>中等</b></span>
           </div>
+          <p class="act-sub" data-in="0.84">对应原理 · 人民群众是历史的创造者</p>
         </div>
       </article>
       <article class="act" data-act="2">
         <figure class="act-figure"><img src="assets/03-理想不会落幕.png" alt="第三章《理想不会落幕》画面"></figure>
         <div class="act-body">
-          <p class="act-no">ACT Ⅲ / 未来</p>
+          <p class="act-no">第三幕 / 未来</p>
           <h3 class="act-title serif">理想不会落幕</h3>
-          <p class="act-line">青年背影走过黑夜走向黎明，路灯与树影拉出纵深，霞光展开成扇面。路是曲折的，方向是向前的。</p>
-          <div class="act-tags">
+          <p class="act-poem serif">有些人倒在黎明之前，但黎明从未停止到来。</p>
+          <p class="act-line" data-in="0.34">天还没亮。一个人背着光往前走，路灯把影子拉得很长，树影一层层退到身后。画面本身就把「曲折」画成了纵深。</p>
+          <p class="act-line" data-in="0.56">但光在前面。黎明不是等来的，是一步一步走过去的——理想必须经过实践才能成为现实，中间那段夜路，是它必须付的代价。</p>
+          <div class="act-tags" data-in="0.74">
             <span>主色 <b>深蓝紫 · 暖金 · 象牙白</b></span>
             <span>闪粉 <b>蓝紫闪粉 + 星星金片</b></span>
-            <span>原理 <b>前进性与曲折性 · 理想与实践</b></span>
+            <span>流动 <b>较快</b></span>
           </div>
+          <p class="act-sub" data-in="0.84">对应原理 · 社会发展的前进性与曲折性 · 理想与实践</p>
         </div>
       </article>
-      <div class="acts-rail" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <div class="acts-rail" aria-hidden="true"><i></i><i></i><i></i></div>
       <p class="acts-hint" aria-hidden="true">滚动换幕</p>
     </div>
   </div>
@@ -1006,25 +1044,112 @@ var PLAN = [
   Array.prototype.forEach.call(nodes, function(n){ io.observe(n); });
 })();
 
-/* ============ 三幕：滚动驱动 ============ */
+/* ============ 三幕：滚到就自动演一遍 ============ */
 (function acts(){
   var sec = document.getElementById('acts');
   if (!sec) return;
-  var list = Array.prototype.slice.call(sec.querySelectorAll('.act'));
+  var list = [].slice.call(sec.querySelectorAll('.act'));
   var rail = sec.querySelectorAll('.acts-rail i');
-  if (REDUCE){ list.forEach(function(a){ a.classList.add('on'); }); return; }
+  var DUR = 4600;
+  var cur = -1, sub = 0, t0 = 0, raf = null;
+
+  /* 诗句拆字 + 收集分层元素 */
+  list.forEach(function(act){
+    var poem = act.querySelector('.act-poem');
+    if (poem && !poem.getAttribute('data-split')){
+      var txt = (poem.textContent || '').trim();
+      poem.textContent = '';
+      for (var i = 0; i < txt.length; i++){
+        var s = document.createElement('span');
+        s.className = 'c';
+        s.textContent = txt[i];
+        poem.appendChild(s);
+      }
+      poem.setAttribute('data-split', '1');
+      act._chars = [].slice.call(poem.querySelectorAll('.c'));
+    }
+    act._layers = [].slice.call(act.querySelectorAll('[data-in]')).map(function(el){
+      return { el: el, at: parseFloat(el.getAttribute('data-in')) || 0 };
+    });
+    act._img = act.querySelector('.act-figure img');
+  });
+
+  function ease(x){ return x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x); }
+
+  function paint(idx, k){
+    list.forEach(function(act, i){
+      var on = i === idx;
+      act.classList.toggle('on', on);
+      if (!on) return;
+      if (act._chars){
+        act._chars.forEach(function(c, j){
+          var a = ease((k - 0.04 - j * 0.012) / 0.10);
+          c.style.opacity = a;
+          c.style.transform = 'translateY(' + (1 - a) * 8 + 'px)';
+        });
+      }
+      (act._layers || []).forEach(function(L){
+        var o = ease((k - L.at) / 0.16);
+        L.el.style.opacity = o;
+        L.el.style.transform = 'translateY(' + (1 - o) * 14 + 'px)';
+      });
+      if (act._img){
+        var z = 1.10 - 0.10 * ease(k);
+        act._img.style.transform = 'scale(' + z.toFixed(4) + ') translateY(' + (-6 * ease(k)).toFixed(1) + 'px)';
+      }
+    });
+    for (var i = 0; i < rail.length; i++){
+      if (i < idx) rail[i].style.background = 'var(--gold)';
+      else if (i === idx){
+        var w = Math.round(sub * 100);
+        rail[i].style.background = 'linear-gradient(90deg,var(--gold) ' + w + '%, var(--hair-2) ' + w + '%)';
+      } else rail[i].style.background = 'var(--hair-2)';
+    }
+  }
+
+  function play(){
+    sub = 0;
+    t0 = performance.now();
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(function step(ts){
+      var k = Math.min(1, (ts - t0) / DUR);
+      sub = k;
+      paint(cur, k);
+      raf = k < 1 ? requestAnimationFrame(step) : null;
+    });
+  }
+
   function update(){
     var r = sec.getBoundingClientRect();
     var total = sec.offsetHeight - window.innerHeight;
     var p = total > 0 ? (-r.top) / total : 0;
     p = Math.max(0, Math.min(1, p));
-    var idx = p < .34 ? 0 : (p < .67 ? 1 : 2);
-    list.forEach(function(a, i){ a.classList.toggle('on', i === idx); });
-    rail.forEach(function(x, i){ x.classList.toggle('on', i === idx); });
+    var idx = Math.min(2, Math.floor(p * 3));
+    if (idx !== cur){ cur = idx; play(); }
   }
+
+  if (REDUCE){
+    list.forEach(function(a){
+      a.classList.add('on');
+      (a._layers || []).forEach(function(L){ L.el.style.opacity = 1; L.el.style.transform = 'none'; });
+      if (a._chars) a._chars.forEach(function(c){ c.style.opacity = 1; c.style.transform = 'none'; });
+      if (a._img) a._img.style.transform = 'none';
+    });
+    return;
+  }
+
   window.addEventListener('scroll', update, { passive:true });
   window.addEventListener('resize', update);
   update();
+
+  /* 调试/预览钩子：把某一幕定格在指定进度（不影响正常滚动播放） */
+  window.__acts = {
+    freeze: function(idx, k){
+      if (raf) cancelAnimationFrame(raf);
+      raf = null; cur = idx; sub = k;
+      paint(idx, k);
+    }
+  };
 })();
 
 /* ============ 进度条 + 指针光晕 ============ */
